@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "284918029661",
+    "project_id": "sewingcircle-c7681",
+    "storage_bucket": "sewingcircle-c7681.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284918029661:android:facab7d242b07c4d0a1cb4",
+        "android_client_info": {
+          "package_name": "com.adeeltahir.sewingcircle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByXKvqp1rS_s0_e9spUScBRxtQtYumpjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

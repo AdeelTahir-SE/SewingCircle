@@ -24,6 +24,7 @@ public class HomeFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Perform search operation here
+                //find the person
                 performSearch(query);
                 return true;
             }
@@ -31,6 +32,7 @@ public class HomeFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // Perform search operation as text changes
+                //give suggestions
                 performSearch(newText);
                 return true;
             }
@@ -43,4 +45,6 @@ public class HomeFragment extends Fragment {
         // Implement your search logic here
         // You can filter data, update UI, etc. based on the search query
     }
+
+
 }
