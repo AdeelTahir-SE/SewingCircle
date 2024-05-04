@@ -38,17 +38,17 @@ public class Register extends AppCompatActivity {
     String Name;
 
     String Email;
-            String Password;
+    String Password;
     String ContactInfo;
-            String Category;
+    String Category;
 
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(Register.this, MainActivity.class);
-        }
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if(currentUser != null){
+//            Intent intent = new Intent(Register.this, MainActivity.class);
+//        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +134,7 @@ public class Register extends AppCompatActivity {
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(Name)
-//                .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
+                .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
 //                .setPhotoUri(Uri.parse(null)
                 .build();
 
