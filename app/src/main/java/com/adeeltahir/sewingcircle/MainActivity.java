@@ -46,13 +46,13 @@ PreviousCustomers previousCustomers=new PreviousCustomers();
             return insets;
         });
         auth=FirebaseAuth.getInstance();
-//        user = auth.getCurrentUser();
-//        if(user==null){
-//Intent intent = new Intent(MainActivity.this, Register.class);
-//            startActivity(intent);
-//            finish();
-//        }
-//        else {
+        user = auth.getCurrentUser();
+        if(user==null){
+Intent intent = new Intent(MainActivity.this, Register.class);
+            startActivity(intent);
+            finish();
+        }
+        else {
             Intent intent = getIntent();
             String name = intent.getStringExtra("name");
             String email = intent.getStringExtra("email");
@@ -87,7 +87,7 @@ PreviousCustomers previousCustomers=new PreviousCustomers();
                     Toast.makeText(MainActivity.this, "Failed to read value.", Toast.LENGTH_SHORT).show();
                 }
             });
-
+        }
 
             bottomNavigationView = findViewById(R.id.bottom_navigation);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();

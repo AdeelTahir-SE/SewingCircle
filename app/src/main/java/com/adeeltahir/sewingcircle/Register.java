@@ -129,7 +129,7 @@ public class Register extends AppCompatActivity {
 
     }
 
-    private void updateUI(Object o) {
+    public void updateUI(Object o) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
