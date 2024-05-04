@@ -2,7 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke
         android:width="3.5dp"></stroke>
-    <solid android:color="#FFFFFF"/> <!-- Change the color to what you want -->
-    <corners android:topRightRadius="38dp"
-        android:topLeftRadius="38dp"  /> <!-- Change the radius to adjust the roundness -->
+    <solid android:color="#FFFFFF"/>
+    <corners android:radius="38dp" />
 </shape>

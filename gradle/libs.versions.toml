@@ -10,6 +10,9 @@ constraintlayout = "2.1.4"
 annotation = "1.7.1"
 lifecycleLivedataKtx = "2.7.0"
 lifecycleViewmodelKtx = "2.7.0"
+googleServices = "4.4.1"
+firebaseDatabase = "21.0.0"
+firebaseAuth = "23.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -22,6 +25,9 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
