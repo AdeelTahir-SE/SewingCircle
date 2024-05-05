@@ -1,28 +1,30 @@
-<!-- chat_fragment.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/purpleblue"
+    tools:context=".CurrentCustomer">
+
     <TextView
         android:id="@+id/chat_header_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:background="@color/purpleblue"
-        android:borderWidth="4dp"
-        android:bordercolor="@color/black"
+        android:padding="8dp"
+
         android:textColor="@color/black"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
     <!-- Chat messages container -->
-    <RecyclerView
-        android:id="@+id/chat_messages_recycler_view"
+    <ListView
+        android:id="@+id/chat_messages_list_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"/>
+        android:padding="8dp" />
 
     <!-- Input box for typing messages -->
     <LinearLayout
@@ -35,13 +37,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Type your message"/>
+            android:hint="Type your message" />
 
         <Button
             android:id="@+id/send_message_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"/>
+            android:text="Send" />
     </LinearLayout>
 
 </LinearLayout>

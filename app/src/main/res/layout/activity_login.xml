@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="@drawable/background_"
     android:layout_height="match_parent"
+    android:background="@drawable/background_"
     tools:context=".ui.LoginActivity">
-
-
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -20,33 +18,28 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toTopOf="parent">
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:onClick="Previous"
             android:orientation="vertical"
             android:padding="16dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/sewingcircle"></ImageView>
+                android:src="@drawable/img" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="16dp"
-
                 android:text="Login"
                 android:textSize="24sp"
                 android:textStyle="bold" />
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,7 +48,6 @@
                 android:text="Email"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
 
             <EditText
                 android:id="@+id/et_email"
@@ -66,21 +58,19 @@
                 android:inputType="textEmailAddress"
                 android:padding="8dp" />
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Password"
                 android:textSize="18sp"
-                android:textStyle="bold"></TextView>
-
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></EditText>
-
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
 
             <Button
                 android:id="@+id/submit_button"
@@ -106,4 +96,3 @@
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

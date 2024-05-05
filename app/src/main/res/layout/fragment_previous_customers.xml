@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Previous Customers"
         android:textSize="24sp"
+        tools:context=".PreviousCustomers"
         android:textStyle="bold"></TextView>
 
     <!-- RecyclerView to display grid of previous customers -->

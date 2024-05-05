@@ -1,10 +1,12 @@
 package com.adeeltahir.sewingcircle;
+
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -13,10 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.badge.BadgeDrawable;
+import com.adeeltahir.sewingcircle.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,16 +28,32 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
+    HomeFragment homeFragment;
+    AccountInfo accountInfo;
+    CurrentCustomer currentCustomer;
+    PreviousCustomers previousCustomers;
 
-BottomNavigationView bottomNavigationView;
-HomeFragment homeFragment=new HomeFragment();
-AccountInfo accountInfo=new AccountInfo();
-CurrentCustomer currentCustomer=new CurrentCustomer();
-PreviousCustomers previousCustomers=new PreviousCustomers();
+
+
+    public void onStart() {
+        super.onStart();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+//         Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = auth.getCurrentUser();
+
+        if (currentUser == null) {
+            Intent intentMain = new Intent(MainActivity.this, Register.class);
+            startActivity(intentMain);
+            finish();
+
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -45,92 +61,76 @@ PreviousCustomers previousCustomers=new PreviousCustomers();
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        auth=FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        if(user==null){
-Intent intent = new Intent(MainActivity.this, Register.class);
-            startActivity(intent);
-            finish();
-        }
-        else {
-            Intent intent = getIntent();
-            String name = intent.getStringExtra("name");
-            String email = intent.getStringExtra("email");
-            String password = intent.getStringExtra("password");
-            String contactinfo = intent.getStringExtra("contactinfo");
-            String category = intent.getStringExtra("category");
-            Toast.makeText(this, name + email + password, Toast.LENGTH_SHORT).show();
-            Log.d("MainActivity", "Name: " + name);
-            Log.d("MainActivity", "Email: " + email);
-            Log.d("MainActivity", "Password: " + password);
+//        homeFragment = new HomeFragment();
+//        accountInfo = new AccountInfo();
+//        currentCustomer = new CurrentCustomer();
+//        previousCustomers = new PreviousCustomers();
+        auth = FirebaseAuth.getInstance();
+//        if (user == null) {
+//            Intent intent = new Intent(MainActivity.this, Register.class);
+//            startActivity(intent);
+//            finish();
+//        }
+        if (user != null) {
+            getIntent();
+            Intent I1 = getIntent();
+            String name = I1.getStringExtra("name");
+            String email = I1.getStringExtra("email");
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("message");
 
-            myRef.setValue("Hello Adeel");
+            myRef.setValue(user.getEmail());
 
 
             // Read from the database
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    String value = dataSnapshot.getValue(String.class);
-                    Log.d(TAG, "Value is: " + value);
-                    Toast.makeText(MainActivity.this, value, Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    Log.w(TAG, "Failed to read value.", error.toException());
-                    Toast.makeText(MainActivity.this, "Failed to read value.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-            bottomNavigationView = findViewById(R.id.bottom_navigation);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-            BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.CurrentCustomer);
-            badgeDrawable.setVisible(true);
-            badgeDrawable.setNumber(5);
-
-            bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                    if (menuItem.getItemId() == R.id.home) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-                        return true;
-                    } else if (menuItem.getItemId() == R.id.CurrentCustomer) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentCustomer).commit();
-                        return true;
-                    }
-//                    else if (menuItem.getItemId()==R.id.CurrentCustomer)  {
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,loginFragment).commit();
-//                        return true;
-//                    }
-                    else if (menuItem.getItemId() == R.id.PreviousOrders) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, previousCustomers).commit();
-                        return true;
-                    } else if (menuItem.getItemId() == R.id.Accountinfo) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, accountInfo).commit();
-                        return true;
-                    }
-                    return false;
-
-
+//            myRef.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    // This method is called once with the initial value and again
+//                    // whenever data at this location is updated.
+//                    String value = dataSnapshot.getValue(String.class);
+//                    Log.d(TAG, "Value is: " + value);
+//                    Toast.makeText(MainActivity.this, value, Toast.LENGTH_SHORT).show();
 //                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError error) {
+//                    // Failed to read value
+//                    Log.w(TAG, "Failed to read value.", error.toException());
+//                    Toast.makeText(MainActivity.this, "Failed to read value.", Toast.LENGTH_SHORT).show();
+//                }
+//            });
 
-            }
+            homeFragment = new HomeFragment();
+            accountInfo = new AccountInfo();
+            currentCustomer = new CurrentCustomer();
+            previousCustomers = new PreviousCustomers();
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+            Toast.makeText(this, (CharSequence) getSupportFragmentManager().toString(), Toast.LENGTH_SHORT).show();
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            bottomNavigationView.setOnItemSelectedListener(menuItem -> {
+                final int id = menuItem.getItemId();
+
+                if (id == R.id.home1) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+                } else if (id == R.id.CurrentCustomer1) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentCustomer).commit();
+                } else if (id == R.id.PreviousOrders1) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, previousCustomers).commit();
+                } else if (id == R.id.Accountinfo1) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, accountInfo).commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+                }
+                return true;
             });
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+
+        }
     }
 
 
-    public void Signout(){
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(MainActivity.this, Register.class);
-        startActivity(intent);
-        finish();
-    }
 }

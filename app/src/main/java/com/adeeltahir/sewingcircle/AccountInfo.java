@@ -88,5 +88,7 @@ public class AccountInfo extends Fragment {
     private void signOut() {
         mAuth.signOut();
         Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 }

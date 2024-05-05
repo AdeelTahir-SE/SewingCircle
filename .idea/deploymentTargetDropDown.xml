@@ -10,12 +10,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Laptop\.android\avd\Adeelsphone.avd" />
+                  <value value="C:\Users\Laptop\.android\avd\Medium_Phone_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-05-04T05:37:07.542227700Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-05-05T05:38:52.286402100Z" />
         </State>
       </entry>
       <entry key="LoginActivity (1)">
@@ -45,12 +45,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Laptop\.android\avd\Medium_Phone_Edited_API_34.avd" />
+                  <value value="C:\Users\Laptop\.android\avd\Medium_Phone_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-05-03T01:41:54.252647700Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-05-05T01:27:22.791946300Z" />
         </State>
       </entry>
     </value>
