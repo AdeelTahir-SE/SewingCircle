@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicMarkableReference;
 
 public class AccountInfo extends Fragment {
 ActivityMainBinding binding;
-    private SharedViewModel viewModel;
+
     StorageReference fileRef;
     private TextView mUserNameTextView;
 
@@ -61,7 +61,7 @@ ActivityMainBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
 
         View rootView = inflater.inflate(R.layout.fragment_account_info, container, false);
 
@@ -112,11 +112,7 @@ ActivityMainBinding binding;
 
         return rootView;
     }
-    private void sendStringToFragmentB(String text) {
-        viewModel.setSharedString(UserName);
-        viewModel.setSharedString(text);
-        viewModel.setSharedString(text);
-    }
+
 
     private void saveUser() {
         String newUserName = mEditNameEditText.getText().toString().trim();

@@ -50,20 +50,13 @@ public class HomeFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private CardAdapter mCardAdapter;
     private List<TCard> mCards;
-    private SharedViewModel viewModel;
+    String name ;
+    String email;
+    String address;
+    String contactinfo;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-
-        // Observe changes in the shared string
-        viewModel.getSharedString().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String text) {
-                // Handle the changed string here
-            }
-        });
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCards);
         SearchView searchView = rootView.findViewById(R.id.searchView);
@@ -81,7 +74,7 @@ public class HomeFragment extends Fragment {
 
         mCards = new ArrayList<>();
         // Add some sample cards
-        mCards.add(new TCard("Henry","Tailor","123 Main St","123-456-7890","adee@gmail.com",I1));
+        mCards.add(new TCard(name,"email",address,contactinfo,email,I1));
         mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890",I1));
         mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890" ,I1));
 
