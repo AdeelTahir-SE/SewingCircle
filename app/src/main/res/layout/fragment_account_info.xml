@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".AccountInfo"
+    tools:context=".AccountInfo">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
+
 <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -33,7 +37,7 @@
         android:layout_marginTop="8dp"
         android:hint="Edit User Name"/>
     <TextView
-        android:id="@+id/Adress1"
+        android:id="@+id/Address1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23sp"
@@ -65,6 +69,22 @@
         android:hint="Edit User Email"/>
 
     <TextView
+        android:id="@+id/Contactinfo1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23sp"
+        android:text="User Contact Information"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/contactinfo2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Edit User contact info"/>
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ProfilePicture"
@@ -84,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="23sp"
-
+            android:onClick="selectImage"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
@@ -117,3 +137,5 @@
         android:text="Sign Out" />
 
 </LinearLayout>
+
+</ScrollView>

@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,10 +50,20 @@ public class HomeFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private CardAdapter mCardAdapter;
     private List<TCard> mCards;
-
+    private SharedViewModel viewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        // Observe changes in the shared string
+        viewModel.getSharedString().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String text) {
+                // Handle the changed string here
+            }
+        });
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCards);
         SearchView searchView = rootView.findViewById(R.id.searchView);
@@ -81,6 +93,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         mRecyclerView.setAdapter(mCardAdapter);
     }
+
 }
 
 class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
@@ -140,6 +153,7 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
     }
 }
 
+
  class TCard {
     private String Name;
     private String Category;
@@ -176,6 +190,7 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
     public String getEmail() {
         return Email;
     }
+
 
 
 }
