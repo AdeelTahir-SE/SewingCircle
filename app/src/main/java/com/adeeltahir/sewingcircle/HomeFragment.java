@@ -1,5 +1,6 @@
 package com.adeeltahir.sewingcircle;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,12 +8,14 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -23,87 +26,69 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    private DatabaseReference mDatabaseReference;
+
     private RecyclerView mRecyclerView;
     private CardAdapter mCardAdapter;
-    private List<String> mCardList;
-
-    private SearchView searchView;
+    private List<TCard> mCards;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        mRecyclerView = rootView.findViewById(R.id.gridLayout);
+        mRecyclerView = rootView.findViewById(R.id.recyclerViewCards);
+        SearchView searchView = rootView.findViewById(R.id.searchView);
 
-
-        // Set up the SearchView listener
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Perform search operation here
-                //find the person
-                performSearch(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                // Perform search operation as text changes
-                //give suggestions
-                performSearch(newText);
-                return true;
-            }
-        });
-
+//        searchView.setQuery("Default Text", false);
         return rootView;
-    }
-        @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-            mCardList = new ArrayList<>();
-            mCardAdapter = new CardAdapter(mCardList);
-            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-            mRecyclerView.setAdapter(mCardAdapter);
 
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("your_firebase_node");
-            mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String cardText = snapshot.getValue(String.class);
-                        mCardList.add(cardText);
-                    }
-                    mCardAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-
-            });
-        }
-
-
-
-
-    private void performSearch(String query) {
-        // Implement your search logic here
-        // You can filter data, update UI, etc. based on the search query
     }
 
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ImageView I1 = view.findViewById(R.id.imgae);
+
+        mCards = new ArrayList<>();
+        // Add some sample cards
+        mCards.add(new TCard("Henry","Tailor","123 Main St","123-456-7890","adee@gmail.com",I1));
+        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890",I1));
+        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890" ,I1));
+
+
+        mCardAdapter = new CardAdapter(mCards);
+
+        // Set up RecyclerView with GridLayoutManager
+        int spanCount = 2; // Number of columns in the grid
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        mRecyclerView.setAdapter(mCardAdapter);
+    }
 }
+
 class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 
-    private List<String> mData;
+    private List<TCard> mCards;
 
-    public CardAdapter(List<String> data) {
-        this.mData = data;
+    public CardAdapter(List<TCard> cards) {
+        this.mCards = cards;
     }
 
     @NonNull
@@ -115,26 +100,82 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        String cardText = mData.get(position);
-        holder.bind(cardText);
+        TCard card = mCards.get(position);
+        holder.bind(card);
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mCards.size();
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTextView;
+        private TextView Name;
+        private TextView Category;
+        private TextView Address;
+        private TextView Contactinfo;
+        private TextView Email;
+        private ImageView ProfilePic;
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
-            mTextView = itemView.findViewById(R.id.textView);
+            Name = itemView.findViewById(R.id.textView1);
+            Category = itemView.findViewById(R.id.textView2);
+            Address = itemView.findViewById(R.id.textView3);
+            Contactinfo = itemView.findViewById(R.id.textView4);
+            Email = itemView.findViewById(R.id.textView5);
+            ProfilePic =itemView.findViewById(R.id.image);
         }
 
-        public void bind(String text) {
-            mTextView.setText(text);
+        public void bind(TCard card)
+        {
+            Name.setText(card.getName());
+            Category.setText(card.getCategory());
+            Address.setText(card.getAddress());
+            Contactinfo.setText(card.getContactinfo());
+            Email.setText(card.getEmail());
+            ProfilePic.setImageDrawable(card.getProfilePic().getDrawable());
         }
     }
+}
+
+ class TCard {
+    private String Name;
+    private String Category;
+    private String Address;
+    private String Contactinfo;
+    private String Email;
+    private ImageView ProfilePic;
+
+    public TCard(String Name,String Category, String Address, String Contactinfo, String Email,ImageView ProfilePic) {
+        this.Name = Name;
+        this.Category = Category;
+        this.Address = Address;
+        this.Contactinfo = Contactinfo;
+        this.Email = Email;
+        this.ProfilePic=ProfilePic;
+    }
+
+
+    public String getName() {
+        return Name;
+    }
+    public String getCategory() {
+        return Category;
+    }
+    public String getAddress() {
+        return Address;
+    }
+    public String getContactinfo() {
+        return Contactinfo;
+    }
+    public ImageView getProfilePic() {
+        return ProfilePic;
+    }
+    public String getEmail() {
+        return Email;
+    }
+
+
 }

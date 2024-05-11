@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.util.concurrent.atomic.AtomicMarkableReference;
 
 public class AccountInfo extends Fragment {
 
@@ -38,8 +44,25 @@ public class AccountInfo extends Fragment {
         mEditNameEditText = rootView.findViewById(R.id.editNameEditText);
         mSaveButton = rootView.findViewById(R.id.saveButton);
         mSignOutButton = rootView.findViewById(R.id.signOutButton);
-
+        ImageView ProfilePic = rootView.findViewById(R.id.imageView);
+        FirebaseStorage storage= FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
         mAuth = FirebaseAuth.getInstance();
+
+
+        // Create a reference to "mountains.jpg"
+        StorageReference mountainsRef = storageRef.child("mountains.jpg");
+
+// Create a reference to 'images/mountains.jpg'
+        StorageReference mountainImagesRef = storageRef.child("images/mountains.jpg");
+
+// While the file names are the same, the references point to different files
+        mountainsRef.getName().equals(mountainImagesRef.getName());    // true
+        mountainsRef.getPath().equals(mountainImagesRef.getPath());    // false
+
+
+
+
 
         // Set initial user name
         String userName = mAuth.getCurrentUser().getDisplayName();

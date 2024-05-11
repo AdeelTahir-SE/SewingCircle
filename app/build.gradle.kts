@@ -50,9 +50,11 @@ dependencies {
     implementation(libs.gridlayout)
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation(libs.databinding.adapters)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation ("com.google.firebase:firebase-storage:21.0.0")
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation("com.google.firebase:firebase-analytics")
 }
