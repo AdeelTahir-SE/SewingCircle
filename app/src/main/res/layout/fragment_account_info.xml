@@ -93,7 +93,7 @@
         android:layout_marginTop="23sp"
         android:textStyle="bold"
         ></TextView>
-
+<
         <!-- First ImageView -->
         <ImageView
             android:id="@+id/imageView"
