@@ -9,14 +9,8 @@
     android:background="@drawable/background_"
     tools:context=".Register">
 
-<!--        <ScrollView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_weight="1"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -31,7 +25,18 @@
 
         app:layout_constraintTop_toTopOf="parent">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -94,11 +99,11 @@
 
 
             <EditText
-                android:id="@+id/et_password"
+                android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></EditText>
-
-
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -109,14 +114,30 @@
                 android:textStyle="bold" />
 
 
-            <EditText
-                android:id="@+id/user_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Customer/Tailor"
-                android:inputType="textEmailAddress"
-                android:padding="8dp" />
+            <LinearLayout
+                android:layout_width="282dp"
+                android:layout_height="51dp"
+                android:orientation="horizontal">
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <RadioButton
+                        android:id="@+id/Tailor"
+                        android:layout_width="match_parent"
+                        android:layout_height="22dp"
+                        android:layout_marginTop="5sp"
+                        android:text="Tailor" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton2"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Customer" />
+                </RadioGroup>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -128,22 +149,18 @@
 
 
             <EditText
-                android:id="@+id/input_contact"
+                android:id="@+id/editTextNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Enter your contact number"
-                android:inputType="textEmailAddress"
-                android:padding="8dp" />
-
+                android:ems="10"
+                android:inputType="number" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="                     Already egistered? Login here"
                 android:onClick="onLoginClick"
-               />
+                android:text="                     Already registered? Login here" />
 
             <Button
                 android:id="@+id/submit_button"
@@ -159,6 +176,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/your_last_edit_text_id_here" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
@@ -188,9 +209,11 @@
                 android:layout_margin="16dp"
                 android:src="@drawable/twitter"></ImageView>
         </LinearLayout>
-
+       </LinearLayout>
+        </ScrollView>
     </FrameLayout>
-<!--        </ScrollView>-->
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

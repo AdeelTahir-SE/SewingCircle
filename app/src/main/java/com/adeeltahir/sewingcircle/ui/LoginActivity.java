@@ -33,19 +33,19 @@ public class LoginActivity extends AppCompatActivity {
     EditText password;
     String Email;
     String Password;
-        public void onStart() {
-        super.onStart();
-//         Check if user is signed in (non-null) and update UI accordingly.
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.putExtra("email", currentUser.getEmail());
-//            intent.putExtra("name", currentUser.getDisplayName());
-            startActivity(intent);
-            finish();
-        }
-    }
+//        public void onStart() {
+//        super.onStart();
+////         Check if user is signed in (non-null) and update UI accordingly.
+//        mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if(currentUser != null){
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            intent.putExtra("email", currentUser.getEmail());
+////            intent.putExtra("name", currentUser.getDisplayName());
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
