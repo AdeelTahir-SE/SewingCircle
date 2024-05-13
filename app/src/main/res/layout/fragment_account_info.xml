@@ -5,11 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:context=".AccountInfo">
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginBottom="40sp"
     android:padding="16dp">
+
 
 <TextView
     android:layout_width="match_parent"
@@ -21,6 +24,25 @@
     android:layout_marginTop="23sp"
     ></TextView>
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23sp"
+        android:onClick="selectImage"
+        android:layout_gravity="center"
+        android:src="@drawable/img" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ProfilePicture"
+        android:text="Profile Picture"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="26sp"
+        android:layout_marginTop="23sp"
+        android:textStyle="bold"
+        ></TextView>
     <TextView
         android:id="@+id/userNameTextView"
         android:layout_width="wrap_content"
@@ -84,41 +106,12 @@
         android:layout_marginTop="8dp"
         android:hint="Edit User contact info"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ProfilePicture"
-        android:text="Profile Picture"
-        android:textSize="26sp"
-        android:layout_marginTop="23sp"
-        android:textStyle="bold"
-        ></TextView>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
 
-        <!-- First ImageView -->
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="23sp"
-            android:onClick="selectImage"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/img" />
 
-        <!-- Second ImageView (Edit Icon) -->
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_edit_24"
-            android:layout_alignEnd="@id/imageView"
-            android:layout_alignBottom="@id/imageView"
-            android:id="@+id/edit" />
-    </RelativeLayout>
+
+
+
+
     <Button
         android:id="@+id/saveButton"
 
@@ -136,6 +129,7 @@
         android:layout_gravity="center"
         android:text="Sign Out" />
 
+    <!-- First ImageView -->
 </LinearLayout>
 
 </ScrollView>
