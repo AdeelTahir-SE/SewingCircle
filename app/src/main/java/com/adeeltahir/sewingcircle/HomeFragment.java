@@ -71,7 +71,9 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ImageView I1 = view.findViewById(R.id.imgae);
-
+        mRecyclerView = view.findViewById(R.id.recyclerViewCards);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView .setHasFixedSize(true);
         mCards = new ArrayList<>();
         // Add some sample cards
         mCards.add(new TCard(name,"email",address,contactinfo,email,I1));
@@ -84,6 +86,7 @@ public class HomeFragment extends Fragment {
         // Set up RecyclerView with GridLayoutManager
         int spanCount = 2; // Number of columns in the grid
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        mRecyclerView.setAdapter(mCardAdapter);
         mRecyclerView.setAdapter(mCardAdapter);
     }
 
@@ -123,6 +126,13 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
         private TextView Contactinfo;
         private TextView Email;
         private ImageView ProfilePic;
+        private TextView HName;
+        private TextView HAddress;
+        private TextView HContactinfo;
+        private TextView HEmail;
+        private  TextView HCategory;
+
+
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -132,10 +142,22 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
             Contactinfo = itemView.findViewById(R.id.textView4);
             Email = itemView.findViewById(R.id.textView5);
             ProfilePic =itemView.findViewById(R.id.image);
+            HName=itemView.findViewById(R.id.HName);
+            HAddress=itemView.findViewById(R.id.HAddress);
+            HContactinfo=itemView.findViewById(R.id.HContactinfo);
+            HEmail=itemView.findViewById(R.id.HEmail);
+            HCategory=itemView.findViewById(R.id.HCategory);
+
         }
 
         public void bind(TCard card)
         {
+            HName.setText("Name:");
+            HAddress.setText("Address:");
+            HContactinfo.setText("Contact Info:");
+            HEmail.setText("Email:");
+            HCategory.setText("Category:");
+
             Name.setText(card.getName());
             Category.setText(card.getCategory());
             Address.setText(card.getAddress());
