@@ -51,7 +51,6 @@ ActivityMainBinding binding;
     private FirebaseAuth mAuth;
     Uri imageUri;
     StorageReference storageReference;
-
     String UserName;
     String Addressinfo;
     String Email;

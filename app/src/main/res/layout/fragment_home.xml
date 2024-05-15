@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-        tools:context=".HomeFragment">
+    tools:context=".HomeFragment">
 
 
-        <SearchView
-            android:id="@+id/searchView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"  />
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-<ImageView
-    android:layout_width="0dp"
-    android:id="@+id/imgae"
-    android:layout_height="0dp"
-    android:src="@drawable/img"></ImageView>
+    <ImageView
+        android:id="@+id/imgae"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/img"></ImageView>
 
-        <androidx.recyclerview.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCards"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    </LinearLayout>
+</LinearLayout>
 
 
 
