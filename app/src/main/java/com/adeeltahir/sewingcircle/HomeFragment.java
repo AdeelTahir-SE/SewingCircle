@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,7 +50,9 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private CardAdapter mCardAdapter;
-    private List<TCard> mCards;
+    private List<Tailor> tailors;
+    private List<TCard> list;
+
     String name ;
     String email;
     String address;
@@ -71,20 +74,42 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ImageView I1 = view.findViewById(R.id.imgae);
-
-        mCards = new ArrayList<>();
-        // Add some sample cards
-        mCards.add(new TCard(name,"email",address,contactinfo,email,I1));
-        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890",I1));
-        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890" ,I1));
-
-
-        mCardAdapter = new CardAdapter(mCards);
+         int i=0;
+        tailors = new ArrayList<>();
+        list= new ArrayList<>();
+        mCardAdapter = new CardAdapter(list);
 
         // Set up RecyclerView with GridLayoutManager
+
+        // Add some sample cards
+        DatabaseReference myRef= FirebaseDatabase.getInstance().getReference().child("Tailor");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tailors.clear();
+                list.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                    Tailor tailor =dataSnapshot.getValue(Tailor.class);
+                    tailors.add(tailor);
+                    list.add(new TCard(tailors.get(i),I1));
+                }
+                mCardAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mRecyclerView.getContext(), "the data failed to load", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        mCards.add(new TCard(name,"email",address,contactinfo,email,I1));
+//        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890",I1));
+//        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890" ,I1));
         int spanCount = 2; // Number of columns in the grid
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         mRecyclerView.setAdapter(mCardAdapter);
+
+
     }
 
 }
@@ -163,7 +188,15 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
         this.Email = Email;
         this.ProfilePic=ProfilePic;
     }
-
+    public TCard(Tailor tailor,ImageView I1)
+    {
+        this.Name = tailor.getName();
+        this.Category = tailor.getCategory();
+        this.Address = tailor.getAddress();
+        this.Contactinfo = tailor.getContactInfo();
+        this.Email = tailor.getEmail();
+        this.ProfilePic=I1;
+    }
 
     public String getName() {
         return Name;
