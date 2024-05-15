@@ -18,5 +18,9 @@
     android:id="@+id/PreviousOrders1"
     android:title="Previous Orders"
     android:icon="@drawable/customers" />
+    <item
+    android:id="@+id/Requests1"
+    android:title="Requests"
+    android:icon="@drawable/customers" />
 
 </menu>

@@ -17,14 +17,16 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentCustomer extends Fragment {
+public class CurrentCustomer extends Fragment  {
 
     private TextView headerTextView;
     private ListView messagesListView;
     private EditText messageInputEditText;
     private Button sendMessageButton;
-    private ArrayAdapter<String> adapter;
+    private CustomAdapter adapter;
     private List<String> messages = new ArrayList<>();
+
+    Bundle bundle;
 
     @Nullable
     @Override
@@ -36,8 +38,8 @@ public class CurrentCustomer extends Fragment {
         messageInputEditText = view.findViewById(R.id.message_input_edit_text);
         sendMessageButton = view.findViewById(R.id.send_message_button);
 
-        // Set up ListView
-        adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, messages);
+        // Set up ListView with custom adapter
+        adapter = new CustomAdapter(messages);
         messagesListView.setAdapter(adapter);
 
         sendMessageButton.setOnClickListener(v -> {
@@ -46,10 +48,52 @@ public class CurrentCustomer extends Fragment {
                 messages.add(message);
                 adapter.notifyDataSetChanged();
                 messageInputEditText.getText().clear();
-                messagesListView.smoothScrollToPosition(adapter.getCount() - 1);
+                messagesListView.smoothScrollToPosition(messages.size() - 1);
             }
         });
 
         return view;
+
+    }
+
+
+
+
+
+    // Custom Adapter for ListView
+    private class CustomAdapter extends ArrayAdapter<String> {
+
+        private List<String> messages;
+
+        public CustomAdapter(List<String> messages) {
+            super(requireContext(), R.layout.item_message, messages);
+            this.messages = messages;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            ViewHolder viewHolder;
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.messageTextView = convertView.findViewById(R.id.message_text_view);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            String message = messages.get(position);
+            viewHolder.messageTextView.setText(message);
+
+            return convertView;
+
+        }
+
+        private class ViewHolder {
+            TextView messageTextView;
+        }
     }
 }
+

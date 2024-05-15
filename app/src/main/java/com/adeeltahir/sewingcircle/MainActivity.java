@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
 
+
     public void onStart() {
         super.onStart();
         auth = FirebaseAuth.getInstance();
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft= fm.beginTransaction();
         BottomNavigationView bottomNavigationView;
         bottomNavigationView=(BottomNavigationView) findViewById(R.id.bottom_navigation);
-        ft.add(R.id.fragment_container,new CurrentCustomer());
+        ft.add(R.id.fragment_container,new HomeFragment());
         ft.commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -82,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
                 else if(id==R.id.Accountinfo1)
                 {
                     replace_fragment(new AccountInfo());
+                }
+                else if(id==R.id.Requests1)
+                {
+                    replace_fragment(new Requests());
                 }
                 return true;
             }

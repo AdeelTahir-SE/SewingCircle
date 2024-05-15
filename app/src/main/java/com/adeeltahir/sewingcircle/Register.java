@@ -60,20 +60,20 @@ RadioButton r1,r2;
     String ContactInfo;
     String Category;
 
-//    public void onStart() {
-//        super.onStart();
-//
-//        mAuth = FirebaseAuth.getInstance();
-////         Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if(currentUser != null){
-//            Intent intentMain = new Intent(Register.this, MainActivity.class);
-//            intentMain.putExtra("email", currentUser.getEmail());
-//            intentMain.putExtra("name", currentUser.getDisplayName());
-//      startActivity(intentMain);
-//      finish();
-//        }
-//    }
+    public void onStart() {
+        super.onStart();
+
+        mAuth = FirebaseAuth.getInstance();
+//         Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            Intent intentMain = new Intent(Register.this, MainActivity.class);
+            intentMain.putExtra("email", currentUser.getEmail());
+            intentMain.putExtra("name", currentUser.getDisplayName());
+      startActivity(intentMain);
+      finish();
+        }
+    }
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PreviousCustomers">
+    tools:context=".Requests">
 
     <!-- TextView for the title -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PreviousCustomers"
+        android:text="Requests"
         android:gravity="center"
         android:layout_margin="18sp"
         android:textSize="24sp"
@@ -19,12 +19,12 @@
 
     <!-- RecyclerView to display grid of previous customers -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewPreviousCustomers"
+        android:id="@+id/recyclerViewReqs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
         android:clipToPadding="false"
         android:scrollbars="vertical"
-        tools:listitem="@layout/item_previous_customer" />
+        tools:listitem="@layout/itemrequests" />
 
 </LinearLayout>

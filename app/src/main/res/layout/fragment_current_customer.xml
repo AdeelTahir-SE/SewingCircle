@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:background="@color/purpleblue"
         android:padding="8dp"
-
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
