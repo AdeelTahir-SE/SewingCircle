@@ -1,9 +1,5 @@
 package com.adeeltahir.sewingcircle;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,176 +8,94 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.adeeltahir.sewingcircle.databinding.ActivityMainBinding;
-import com.adeeltahir.sewingcircle.ui.LoginActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.storage.FirebaseStorage;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.concurrent.atomic.AtomicMarkableReference;
 
 public class AccountInfo extends Fragment {
-ActivityMainBinding binding;
 
-    StorageReference fileRef;
-    private TextView mUserNameTextView;
-
-    private EditText mEditNameEditText;
-    private EditText mEditEmail;
-    private EditText mEditAddress;
-    private EditText mEditContact;
-    private Button mSaveButton;
-    private Button mSignOutButton;
-    ImageView ProfilePic;
-    private FirebaseAuth mAuth;
-    Uri imageUri;
-    StorageReference storageReference;
-    String UserName;
-    String Addressinfo;
-    String Email;
-    String Contact;
-
+    private TextView userNameTextView, addressTextView, emailTextView, contactInfoTextView;
+    private EditText editNameEditText, editAddressEditText, editEmailEditText, editContactInfoEditText;
+    private Button saveButton, editButton, signOutButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_account_info, container, false);
 
+        userNameTextView = view.findViewById(R.id.userNameTextView);
+        editNameEditText = view.findViewById(R.id.editNameEditText);
+        addressTextView = view.findViewById(R.id.Address1);
+        editAddressEditText = view.findViewById(R.id.Address2);
+        emailTextView = view.findViewById(R.id.Emailuser1);
+        editEmailEditText = view.findViewById(R.id.Emailuser2);
+        contactInfoTextView = view.findViewById(R.id.Contactinfo1);
+        editContactInfoEditText = view.findViewById(R.id.contactinfo2);
 
-        View rootView = inflater.inflate(R.layout.fragment_account_info, container, false);
+        saveButton = view.findViewById(R.id.saveButton);
+        editButton = view.findViewById(R.id.editButton);
+        signOutButton = view.findViewById(R.id.signOutButton);
 
-        mEditNameEditText = rootView.findViewById(R.id.editNameEditText);
-        mEditEmail = rootView.findViewById(R.id.Emailuser2);
-        mEditContact = rootView.findViewById(R.id.contactinfo2);
-        mEditAddress = rootView.findViewById(R.id.Address2);
+        // Set initial text or fetch from a data source
+        userNameTextView.setText("John Doe");
+        editNameEditText.setText("John Doe");
 
-        mSaveButton = rootView.findViewById(R.id.saveButton);
-        mSignOutButton = rootView.findViewById(R.id.signOutButton);
-         ProfilePic = rootView.findViewById(R.id.imageView);
-//        FirebaseStorage storage= FirebaseStorage.getInstance();
+        addressTextView.setText("123 Main St");
+        editAddressEditText.setText("123 Main St");
 
-        mAuth = FirebaseAuth.getInstance();
-        ProfilePic.setOnClickListener(new View.OnClickListener() {
+        emailTextView.setText("john.doe@example.com");
+        editEmailEditText.setText("john.doe@example.com");
+
+        contactInfoTextView.setText("+1234567890");
+        editContactInfoEditText.setText("+1234567890");
+
+        editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                selectImage();
-                ProfilePic.setImageURI(imageUri);
+                enableEditing(true);
             }
         });
 
-
-        UserName = mAuth.getCurrentUser().getDisplayName();
-        mEditNameEditText.setText(UserName);
-        Addressinfo = mAuth.getCurrentUser().getDisplayName();
-        mEditAddress.setText(Addressinfo);
-        Contact = mAuth.getCurrentUser().getDisplayName();
-        mEditContact.setText(Contact);
-        Email = mAuth.getCurrentUser().getDisplayName();
-        mEditEmail.setText(Email);
-
-
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUser();
+                saveChanges();
+                enableEditing(false);
             }
         });
 
-        mSignOutButton.setOnClickListener(new View.OnClickListener() {
+        signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signOut();
+                // Implement sign out action
             }
         });
 
-        return rootView;
+        return view;
     }
 
+    private void enableEditing(boolean isEditing) {
+        userNameTextView.setVisibility(isEditing ? View.GONE : View.VISIBLE);
+        editNameEditText.setVisibility(isEditing ? View.VISIBLE : View.GONE);
 
-    private void saveUser() {
-        String newUserName = mEditNameEditText.getText().toString().trim();
-        String newUserEmail = mEditEmail.getText().toString().trim();
-        String newUserContact = mEditContact.getText().toString().trim();
-        String newUserAddress = mEditAddress.getText().toString().trim();
+        addressTextView.setVisibility(isEditing ? View.GONE : View.VISIBLE);
+        editAddressEditText.setVisibility(isEditing ? View.VISIBLE : View.GONE);
 
-        if (!newUserName.isEmpty()) {
-            // Update user name in Firebase
-            mAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder()
-                            .setDisplayName(newUserName)
-                            .build())
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                mUserNameTextView.setText(newUserName);
-                                Toast.makeText(getContext(), "User name updated successfully", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), "Failed to update user name", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        } else {
-            Toast.makeText(getContext(), "Please enter a new user name", Toast.LENGTH_SHORT).show();
-        }
+        emailTextView.setVisibility(isEditing ? View.GONE : View.VISIBLE);
+        editEmailEditText.setVisibility(isEditing ? View.VISIBLE : View.GONE);
+
+        contactInfoTextView.setVisibility(isEditing ? View.GONE : View.VISIBLE);
+        editContactInfoEditText.setVisibility(isEditing ? View.VISIBLE : View.GONE);
+
+        saveButton.setVisibility(isEditing ? View.VISIBLE : View.GONE);
+        editButton.setVisibility(isEditing ? View.GONE : View.VISIBLE);
     }
 
-    private void signOut() {
-        mAuth.signOut();
-        Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivity(intent);
-        getActivity().finish();
+    private void saveChanges() {
+        userNameTextView.setText(editNameEditText.getText().toString());
+        addressTextView.setText(editAddressEditText.getText().toString());
+        emailTextView.setText(editEmailEditText.getText().toString());
+        contactInfoTextView.setText(editContactInfoEditText.getText().toString());
     }
-
-    public void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 100);
-    }
-
-    // Handle the result of selecting an image
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            uploadImageToFirebase(imageUri);
-            ProfilePic.setImageURI(imageUri);
-        }
-    }
-
-
-    // Upload the selected image to Firebase Storage
-    private void uploadImageToFirebase(Uri imageUri) {
-        storageReference = FirebaseStorage.getInstance().getReference();
-         fileRef = storageReference.child("images/" + System.currentTimeMillis() + ".jpg");
-
-        fileRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    // Handle successful upload
-                })
-                .addOnFailureListener(e -> {
-                    // Handle unsuccessful upload
-                });
-    }
-
-
-
 }
-

@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment {
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     Tailor tailor =dataSnapshot.getValue(Tailor.class);
                     tailors.add(tailor);
-                    list.add(new TCard(tailors.get(i),I1));
+                    list.add(new TCard(tailor,I1));
                 }
                 mCardAdapter.notifyDataSetChanged();
             }

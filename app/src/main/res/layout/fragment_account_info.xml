@@ -4,132 +4,172 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".AccountInfo">
+    tools:context=".AccountInfoFragment">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_marginBottom="40sp"
-    android:padding="16dp">
-
-
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/AccountInformation"
-    android:text="Account Information"
-    android:textSize="26sp"
-    android:gravity="center"
-    android:layout_marginTop="23sp"
-    ></TextView>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23sp"
-        android:onClick="selectImage"
-        android:layout_gravity="center"
-        android:src="@drawable/img" />
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ProfilePicture"
-        android:text="Profile Picture"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="26sp"
-        android:layout_marginTop="23sp"
-        android:textStyle="bold"
-        ></TextView>
-    <TextView
-        android:id="@+id/userNameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23sp"
-        android:text="User Name"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="40sp"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editNameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Edit User Name"/>
-    <TextView
-        android:id="@+id/Address1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23sp"
-        android:text="Adress Info:"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/AccountInformation"
+            android:text="Account Information"
+            android:textSize="26sp"
+            android:gravity="center"
+            android:layout_marginTop="23sp" />
 
-    <EditText
-        android:id="@+id/Address2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Edit your address"/>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:layout_gravity="center"
+            android:src="@drawable/img" />
 
-    <TextView
-        android:id="@+id/Emailuser1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23sp"
-        android:text="User Email"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ProfilePicture"
+            android:text="Profile Picture"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="26sp"
+            android:layout_marginTop="23sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/Emailuser2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Edit User Email"/>
-
-    <TextView
-        android:id="@+id/Contactinfo1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23sp"
-        android:text="User Contact Information"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
-
-    <EditText
-        android:id="@+id/contactinfo2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Edit User contact info"/>
+        <TextView
+            android:id="@+id/NameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="Name :  "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <!-- Username -->
+        <TextView
+            android:id="@+id/userNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="User Name"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
 
+        <EditText
+            android:id="@+id/editNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Edit User Name"
+            android:visibility="gone" />
 
+        <!-- Address -->
+        <TextView
+            android:id="@+id/AddressTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="Address:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/Address1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="Address Info:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
+        <EditText
+            android:id="@+id/Address2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Edit your address"
+            android:visibility="gone" />
 
+        <!-- Email -->
+        <TextView
+            android:id="@+id/EmailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="Email:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/Emailuser1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="User Email"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
+        <EditText
+            android:id="@+id/Emailuser2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Edit User Email"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/saveButton"
+        <!-- Contact Info -->
+        <TextView
+            android:id="@+id/ContactinfoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="Contact info:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/Contactinfo1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:text="User Contact Information"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center"
-        android:text="Save" />
+        <EditText
+            android:id="@+id/contactinfo2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Edit User contact info"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/signOutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center"
-        android:text="Sign Out" />
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:text="Save"
+            android:visibility="gone"/>
 
-    <!-- First ImageView -->
-</LinearLayout>
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:text="Edit" />
 
+        <Button
+            android:id="@+id/signOutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:text="Sign Out" />
+
+    </LinearLayout>
 </ScrollView>
