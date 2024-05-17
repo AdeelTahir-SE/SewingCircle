@@ -169,8 +169,8 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
             HContactinfo.setText("Contact Info:");
             HEmail.setText("Email:");
             HCategory.setText("Category:");
-            int width = 20; // Set your desired maximum width
-            int height = 10; // Set your desired maximum height
+            int width = 100; // Set your desired maximum width
+            int height = 150; // Set your desired maximum height
             Glide.with(itemView.getContext())
                     .load(card.getProfilePic())
                     .placeholder(R.drawable.customer)

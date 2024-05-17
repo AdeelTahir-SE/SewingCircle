@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         tailors = new ArrayList<>();
         mCardAdapter = new CardAdapter(tailors);
         mRecyclerView.setAdapter(mCardAdapter);
@@ -166,8 +166,8 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
             HEmail.setText("Email:");
             HCategory.setText("Category:");
 
-            int width = 20; // Set your desired maximum width
-            int height = 10;
+            int width = 100; // Set your desired maximum width
+            int height = 150;
             Glide.with(itemView.getContext())
                     .load(tailor.getImageUrl())
                     .placeholder(R.drawable.customer)
