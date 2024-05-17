@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".AccountInfoFragment">
+    tools:context=".AccountInfo">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,24 +12,6 @@
         android:orientation="vertical"
         android:layout_marginBottom="40sp"
         android:padding="16dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/AccountInformation"
-            android:text="Account Information"
-            android:textSize="26sp"
-            android:gravity="center"
-            android:layout_marginTop="23sp" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="23sp"
-            android:layout_gravity="center"
-            android:src="@drawable/img" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,6 +23,39 @@
             android:layout_marginTop="23sp"
             android:textStyle="bold" />
 
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23sp"
+            android:layout_gravity="center"
+            android:src="@drawable/img" />
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_margin="5sp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/roundcornersextra">
+
+
+  >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20sp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/AccountInformation"
+            android:text="Account Information"
+            android:textSize="26sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_marginTop="23sp" />
         <TextView
             android:id="@+id/NameTextView"
             android:layout_width="wrap_content"
@@ -153,6 +168,7 @@
             android:layout_marginTop="16dp"
             android:layout_gravity="center"
             android:text="Save"
+            android:gravity="center"
             android:visibility="gone"/>
 
         <Button
@@ -170,6 +186,7 @@
             android:layout_marginTop="16dp"
             android:layout_gravity="center"
             android:text="Sign Out" />
-
+    </LinearLayout>
+</LinearLayout>
     </LinearLayout>
 </ScrollView>

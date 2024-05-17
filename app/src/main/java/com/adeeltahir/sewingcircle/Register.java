@@ -52,12 +52,10 @@ public class Register extends AppCompatActivity {
     EditText password;
     EditText contactinfo;
     String category;
+    EditText Address;
 
 RadioButton r1,r2;
     String Name;
-    String Email;
-    String Password;
-    String ContactInfo;
     String Category;
 
     public void onStart() {
@@ -94,6 +92,7 @@ RadioButton r1,r2;
          email = findViewById(R.id.et_email);
          password = findViewById(R.id.editTextPassword);
          contactinfo =findViewById(R.id.editTextNumber);
+         Address=findViewById(R.id.input_Address);
 
 
     }
@@ -107,6 +106,7 @@ RadioButton r1,r2;
         try {
 
         Category="";
+        String address= Address.getText().toString();
         String Name = name.getText().toString();
         String Email = email.getText().toString();
         String Password = password.getText().toString();
@@ -123,11 +123,12 @@ RadioButton r1,r2;
             }
 
         if (Name.isEmpty() || Email.isEmpty() || Password.isEmpty() ||
-                ContactInfo.isEmpty() || Category.isEmpty()) {
+                ContactInfo.isEmpty() || Category.isEmpty()||address.isEmpty()) {
             name.setError("Please enter your name");
             email.setError("Please enter your email");
             password.setError("Please enter your password");
             contactinfo.setError("Please enter your contact info");
+            Address.setError("Please enter your address");
 //            category.setError("Please enter your category");
 
 
@@ -147,7 +148,7 @@ RadioButton r1,r2;
 
                             if (category.equals("TAILOR")) {
                                 // Assuming Tailor class has appropriate constructor
-                                Tailor tailor = new Tailor(Name, "Lahore", ContactInfo, Email, Password, category, 5345.0, 34.0, "Kurtas", 4.5f);
+                                Tailor tailor = new Tailor(Name, address, ContactInfo, Email, Password, category, 5345.0, 34.0, "Kurtas", 4.5f,null);
                                 databaseReference.child("Tailor").child(user.getUid()).setValue(tailor)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -169,7 +170,7 @@ RadioButton r1,r2;
                                         });
                             } else if (category.equals("CUSTOMER")) {
                                 // Assuming Customer class has appropriate constructor
-                                Customer customer = new Customer(Name, "Karachi", ContactInfo, Email, Password, category, 4234.5, "kurtas", 3.5);
+                                Customer customer = new Customer(Name, address, ContactInfo, Email, Password, category, 4234.5, "kurtas", 3.5);
                                 databaseReference.child("Customer").child(user.getUid()).setValue(customer)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

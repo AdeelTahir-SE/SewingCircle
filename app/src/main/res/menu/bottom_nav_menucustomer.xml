@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@+id/CurrentCustomer_customer"
+        android:title="Current Tailor"
+        android:icon="@drawable/customer" />
+    <item
+        android:id="@+id/Requests1_customer"
+        android:title="SentRequests"
+        android:icon="@drawable/customers" />
+    <item
+        android:id="@+id/home1_customer"
+        android:title="Home"
+        android:icon="@drawable/baseline_home_24"
+        />
+    <item
+        android:id="@+id/PreviousOrders1_customer"
+        android:title="Old Tailors"
+        android:icon="@drawable/customers" />
+
+    <item
+        android:id="@+id/Accountinfo1_customer"
+        android:title="Account Info"
+        android:icon="@drawable/baseline_person_24" />
 </menu>

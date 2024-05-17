@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PreviousTailors">
+
+    <!-- TextView for the title -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PreviousTailors"
+        android:gravity="center"
+        android:layout_margin="18sp"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- RecyclerView to display grid of previous customers -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPreviousTailors"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/item_previous_tailor" />
+
+</LinearLayout>

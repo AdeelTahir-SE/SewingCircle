@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/home1"
-        android:title="Home"
-        android:icon="@drawable/baseline_home_24"
-        />
 
-    <item
-        android:id="@+id/Accountinfo1"
-        android:title="Account Info"
-        android:icon="@drawable/baseline_person_24" />
+
+
     <item
         android:id="@+id/CurrentCustomer1"
         android:title="Current Customer"
         android:icon="@drawable/customer" />
     <item
+        android:id="@+id/Requests1"
+        android:title="Requests"
+        android:icon="@drawable/customers" />
+    <item
+        android:id="@+id/home1"
+        android:title="Home"
+        android:icon="@drawable/baseline_home_24"
+        />
+    <item
     android:id="@+id/PreviousOrders1"
     android:title="Previous Orders"
     android:icon="@drawable/customers" />
-    <item
-    android:id="@+id/Requests1"
-    android:title="Requests"
-    android:icon="@drawable/customers" />
 
+    <item
+        android:id="@+id/Accountinfo1"
+        android:title="Account Info"
+        android:icon="@drawable/baseline_person_24" />
 </menu>
+

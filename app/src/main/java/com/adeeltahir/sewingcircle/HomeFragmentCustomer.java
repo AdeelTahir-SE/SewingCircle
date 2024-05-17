@@ -1,10 +1,13 @@
 package com.adeeltahir.sewingcircle;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +18,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragmentCustomer extends Fragment {
+
 
     private RecyclerView mRecyclerView;
     private CardAdapterCustomer mCardAdapter;
@@ -39,12 +47,14 @@ public class HomeFragmentCustomer extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home_customer, container, false);
         mRecyclerView = rootView.findViewById(R.id.recyclerViewCardsCustomer);
         return rootView;
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
+
          I1 = view.findViewById(R.id.imge);
         tailors = new ArrayList<>();
         list = new ArrayList<>();
@@ -81,7 +91,7 @@ public class HomeFragmentCustomer extends Fragment {
 }
 class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardViewHolder> {
 
-    private List<TCardCustomer> mCards;
+    private static List<TCardCustomer> mCards;
 
     public CardAdapterCustomer(List<TCardCustomer> cards) {
         this.mCards = cards;
@@ -91,6 +101,7 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_customer, parent, false);
+
         return new CardViewHolder(view);
     }
 
@@ -106,6 +117,8 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
+        FirebaseAuth auth;
+        FirebaseUser user;
 
         private TextView Name;
         private TextView Category;
@@ -117,7 +130,8 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
         private TextView HAddress;
         private TextView HContactinfo;
         private TextView HEmail;
-        private  TextView HCategory;
+        private TextView HCategory;
+        private Button requestButton;
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -126,12 +140,20 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
             Address = itemView.findViewById(R.id.textViewAddressCustomer);
             Contactinfo = itemView.findViewById(R.id.textViewContactInfoCustomer);
             Email = itemView.findViewById(R.id.textViewEmailCustomer);
-            ProfilePic=itemView.findViewById(R.id.image1);
-            HName=itemView.findViewById(R.id.HName);
-            HAddress=itemView.findViewById(R.id.HAddress);
-            HContactinfo=itemView.findViewById(R.id.HContactinfo);
-            HEmail=itemView.findViewById(R.id.HEmail);
-            HCategory=itemView.findViewById(R.id.HCategory);
+            ProfilePic = itemView.findViewById(R.id.image1);
+            HName = itemView.findViewById(R.id.HName);
+            HAddress = itemView.findViewById(R.id.HAddress);
+            HContactinfo = itemView.findViewById(R.id.HContactinfo);
+            HEmail = itemView.findViewById(R.id.HEmail);
+            HCategory = itemView.findViewById(R.id.HCategory);
+            requestButton = itemView.findViewById(R.id.buttonAccept);
+            requestButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    TCardCustomer currentCard = mCards.get(position);
+                    handleRequestButtonClick(currentCard);
+                }
+            });
 
         }
 
@@ -147,6 +169,28 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
             HContactinfo.setText("Contact Info:");
             HEmail.setText("Email:");
             HCategory.setText("Category:");
+        }
+
+        private void handleRequestButtonClick(TCardCustomer card) {
+            auth = FirebaseAuth.getInstance();
+            user = auth.getCurrentUser();
+
+            if (user != null) {
+                DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid()).child("requests");
+
+                // Push the current user's ID to the tailor's requests node
+                requestsRef.child(user.getUid()).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(itemView.getContext(), "Request sent for: " + card.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(itemView.getContext(), "Failed to send request", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     }
 }

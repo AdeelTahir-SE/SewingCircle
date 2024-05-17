@@ -1,6 +1,7 @@
 package com.adeeltahir.sewingcircle;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +18,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Requests extends Fragment  {
+public class Requests extends Fragment {
 
     private RecyclerView recyclerViewRequests;
     private RequestsAdapter requestsAdapter;
     private List<Request> Requests;
-
+    private List<Request> requestsList; // Initialize this list
+    private DatabaseReference requestsRef;
+    private DatabaseReference customerRef;
 
     @Nullable
     @Override
@@ -39,19 +48,7 @@ public class Requests extends Fragment  {
 
         // Initialize data
         Requests = new ArrayList<>();
-        // Add some sample previous customers
-        Requests.add(new Request("John Doe", "123 Main St", "555-1234", "john.doe@example.com"));
-        Requests.add(new Request("Jane Smith", "456 Elm St", "555-5678", "jane.smith@example.com"));
-        Requests.add(new Request("Mike Johnson", "789 Oak St", "555-9012", "mike.johnson@example.com"));
-        Requests.add(new Request("Emily Davis", "101 Pine St", "555-3456", "emily.davis@example.com"));
-        Requests.add(new Request("David Wilson", "202 Maple St", "555-7890", "david.wilson@example.com"));
-        Requests.add(new Request("Sophia Brown", "303 Birch St", "555-2345", "sophia.brown@example.com"));
-        Requests.add(new Request("Liam Martin", "404 Cedar St", "555-6789", "liam.martin@example.com"));
-        Requests.add(new Request("Olivia Garcia", "505 Walnut St", "555-1235", "olivia.garcia@example.com"));
-        Requests.add(new Request("Noah Martinez", "606 Chestnut St", "555-5679", "noah.martinez@example.com"));
-        Requests.add(new Request("Ava Rodriguez", "707 Spruce St", "555-9013", "ava.rodriguez@example.com"));
-
-
+        requestsList = new ArrayList<>(); // Initialize requestsList
 
         // Initialize adapter
         requestsAdapter = new RequestsAdapter(Requests);
@@ -59,10 +56,60 @@ public class Requests extends Fragment  {
         // Set adapter to RecyclerView
         recyclerViewRequests.setAdapter(requestsAdapter);
 
+        // Add some sample previous customers
+        // Initialize the database reference
+        customerRef = FirebaseDatabase.getInstance().getReference().child("Customers");
+        requestsRef = FirebaseDatabase.getInstance().getReference().child("Tailors").child("requests");
+
+        // Add ValueEventListener to fetch requests from the database
+        requestsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                requestsList.clear(); // Clear the list before adding new requests
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String requestId = snapshot.getKey(); // Get the request ID
+
+                    // Fetch customer details for the request ID
+                    customerRef.child(requestId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot customerSnapshot) {
+                            if (customerSnapshot.exists()) {
+                                // Extract customer details
+                                String name = customerSnapshot.child("name").getValue(String.class);
+                                String address = customerSnapshot.child("address").getValue(String.class);
+                                String contactInfo = customerSnapshot.child("contactInfo").getValue(String.class);
+                                String email = customerSnapshot.child("email").getValue(String.class);
+
+                                // Create a Request object and add it to the list
+                                Request request = new Request(name, address, contactInfo, email);
+                                requestsList.add(request);
+
+                                // Notify the adapter that the data set has changed
+                                requestsAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle onCancelled event
+                            Log.e("RequestsFragment", "Error fetching customer details: " + databaseError.getMessage());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle onCancelled event
+                Log.e("RequestsFragment", "Error fetching requests: " + databaseError.getMessage());
+            }
+        });
+
         return view;
     }
-
 }
+
 class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerViewHolder> {
 
 
@@ -116,11 +163,7 @@ class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerV
             Email.setText(r.getEmail());
 
             buttonAccept.setOnClickListener(v -> {
-
-
-
-
-
+                Toast.makeText(v.getContext(), "Accepted the request", Toast.LENGTH_SHORT).show();
             });
         }
     }

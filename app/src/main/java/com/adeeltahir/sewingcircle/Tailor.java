@@ -7,12 +7,14 @@ public class Tailor extends User{
     private String Speciality;
     private ImageView[] SampleImages;
     private double Ratings;
+    private Customer requests;
 
-    public Tailor(String name, String address, String contactInfo, String email, String password, String category, double payment, double cost, String speciality,  double ratings) {
+    public Tailor(String name, String address, String contactInfo, String email, String password, String category, double payment, double cost, String speciality,  double ratings,Customer Requests) {
         super(name, address, contactInfo, email, password, category, payment);
         Cost = cost;
         Speciality = speciality;
         Ratings = ratings;
+        requests = Requests;
     }
 
     public double getCost() {

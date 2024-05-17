@@ -57,6 +57,7 @@ public class HomeFragment extends Fragment {
     String email;
     String address;
     String contactinfo;
+    Customer requests;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,14 +84,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recyclerViewCards);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView .setHasFixedSize(true);
-//        mCards = new ArrayList<>();
-//        // Add some sample cards
-//        mCards.add(new TCard(name,"email",address,contactinfo,email,I1));
-//        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890",I1));
-//        mCards.add(new TCard("Jane Smith", "456 Elm St","123-456-7890","123-456-7890","123-456-7890" ,I1));
 
-
-//        mCardAdapter = new CardAdapter(mCards);
 
         // Set up RecyclerView with GridLayoutManager
 

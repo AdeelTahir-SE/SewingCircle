@@ -1,6 +1,10 @@
 package com.adeeltahir.sewingcircle;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +17,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class AccountInfo extends Fragment {
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+public class AccountInfo extends Fragment {
+    private DatabaseReference myRef;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
     private TextView userNameTextView, addressTextView, emailTextView, contactInfoTextView;
     private EditText editNameEditText, editAddressEditText, editEmailEditText, editContactInfoEditText;
     private Button saveButton, editButton, signOutButton;
@@ -24,6 +38,9 @@ public class AccountInfo extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_info, container, false);
 
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
         userNameTextView = view.findViewById(R.id.userNameTextView);
         editNameEditText = view.findViewById(R.id.editNameEditText);
         addressTextView = view.findViewById(R.id.Address1);
@@ -32,23 +49,9 @@ public class AccountInfo extends Fragment {
         editEmailEditText = view.findViewById(R.id.Emailuser2);
         contactInfoTextView = view.findViewById(R.id.Contactinfo1);
         editContactInfoEditText = view.findViewById(R.id.contactinfo2);
-
         saveButton = view.findViewById(R.id.saveButton);
         editButton = view.findViewById(R.id.editButton);
         signOutButton = view.findViewById(R.id.signOutButton);
-
-        // Set initial text or fetch from a data source
-        userNameTextView.setText("John Doe");
-        editNameEditText.setText("John Doe");
-
-        addressTextView.setText("123 Main St");
-        editAddressEditText.setText("123 Main St");
-
-        emailTextView.setText("john.doe@example.com");
-        editEmailEditText.setText("john.doe@example.com");
-
-        contactInfoTextView.setText("+1234567890");
-        editContactInfoEditText.setText("+1234567890");
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,18 +60,20 @@ public class AccountInfo extends Fragment {
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveChanges();
-                enableEditing(false);
-            }
+        saveButton.setOnClickListener(v -> {
+            saveChanges();
+            enableEditing(false);
         });
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Implement sign out action
+                FirebaseAuth.getInstance().signOut();
+                // Redirect the user to the login screen or perform any other desired action
+                Intent intent = new Intent(getContext(), Register.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                getActivity().finish();
             }
         });
 
@@ -93,9 +98,78 @@ public class AccountInfo extends Fragment {
     }
 
     private void saveChanges() {
-        userNameTextView.setText(editNameEditText.getText().toString());
-        addressTextView.setText(editAddressEditText.getText().toString());
-        emailTextView.setText(editEmailEditText.getText().toString());
-        contactInfoTextView.setText(editContactInfoEditText.getText().toString());
+        String newName = editNameEditText.getText().toString().trim();
+        String newAddress = editAddressEditText.getText().toString().trim();
+        String newEmail = editEmailEditText.getText().toString().trim();
+        String newContactInfo = editContactInfoEditText.getText().toString().trim();
+
+        myRef.child("name").setValue(newName);
+        myRef.child("address").setValue(newAddress);
+        myRef.child("email").setValue(newEmail);
+        myRef.child("contactInfo").setValue(newContactInfo);
+
+        // Update the TextViews with the new values
+        userNameTextView.setText(newName);
+        addressTextView.setText(newAddress);
+        emailTextView.setText(newEmail);
+        contactInfoTextView.setText(newContactInfo);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (user != null) {
+            myRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid());
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.hasChildren()) {
+                        // User not found in the Tailor node, switch to Customer node
+                        myRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(user.getUid());
+                        fetchUserData();
+                    } else {
+                        fetchUserData();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.w(TAG, "DatabaseError: ", databaseError.toException());
+                }
+            });
+        }
+    }
+
+    private void fetchUserData() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String name = dataSnapshot.child("name").getValue(String.class);
+                    String address = dataSnapshot.child("address").getValue(String.class);
+                    String email = dataSnapshot.child("email").getValue(String.class);
+                    String contactInfo = dataSnapshot.child("contactInfo").getValue(String.class);
+
+                    // Populate the fields with fetched data
+                    userNameTextView.setText(name);
+                    editNameEditText.setText(name);
+
+                    addressTextView.setText(address);
+                    editAddressEditText.setText(address);
+
+                    emailTextView.setText(email);
+                    editEmailEditText.setText(email);
+
+                    contactInfoTextView.setText(contactInfo);
+                    editContactInfoEditText.setText(contactInfo);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "DatabaseError: ", databaseError.toException());
+            }
+        });
     }
 }
