@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,8 +40,6 @@ public class HomeFragmentCustomer extends Fragment {
     private List<Tailor> tailors;
     private List<TCardCustomer> list;
 
-    ImageView I1;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,7 +54,6 @@ public class HomeFragmentCustomer extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-         I1 = view.findViewById(R.id.imge);
         tailors = new ArrayList<>();
         list = new ArrayList<>();
         mCardAdapter = new CardAdapterCustomer(list);
@@ -71,10 +69,11 @@ public class HomeFragmentCustomer extends Fragment {
                 list.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Tailor tailor = dataSnapshot.getValue(Tailor.class);
-                    tailors.add(tailor);
-//                    list.add(new TCardCustomer(tailor));
+                    if (tailor != null) {
+                        String imageUrl = tailor.getImageUrl() != null ? tailor.getImageUrl() : "https://ibb.co/tX1fJSF";
 
-                    list.add(new TCardCustomer(tailor,I1));
+                        list.add(new TCardCustomer(tailor, imageUrl, dataSnapshot.getKey()));
+                    }
                 }
                 mCardAdapter.notifyDataSetChanged();
             }
@@ -89,6 +88,8 @@ public class HomeFragmentCustomer extends Fragment {
         mRecyclerView.setAdapter(mCardAdapter);
     }
 }
+
+
 class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardViewHolder> {
 
     private static List<TCardCustomer> mCards;
@@ -163,12 +164,19 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
             Address.setText(card.getAddress());
             Contactinfo.setText(card.getContactinfo());
             Email.setText(card.getEmail());
-            ProfilePic.setImageDrawable(card.getProfilePic().getDrawable());
             HName.setText("Name:");
             HAddress.setText("Address:");
             HContactinfo.setText("Contact Info:");
             HEmail.setText("Email:");
             HCategory.setText("Category:");
+            int width = 20; // Set your desired maximum width
+            int height = 10; // Set your desired maximum height
+            Glide.with(itemView.getContext())
+                    .load(card.getProfilePic())
+                    .placeholder(R.drawable.customer)
+                    .error(R.drawable.customer)
+                    .override(width, height)// Error image if loading fails
+                    .into(ProfilePic);
         }
 
         private void handleRequestButtonClick(TCardCustomer card) {
@@ -176,20 +184,39 @@ class CardAdapterCustomer extends RecyclerView.Adapter<CardAdapterCustomer.CardV
             user = auth.getCurrentUser();
 
             if (user != null) {
-                DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid()).child("requests");
+                DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(card.getKey()).child("requests");
+                DatabaseReference sentreqsref = FirebaseDatabase.getInstance().getReference().child("Customer").child(user.getUid()).child("sentRequests");
 
                 // Push the current user's ID to the tailor's requests node
-                requestsRef.child(user.getUid()).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(itemView.getContext(), "Request sent for: " + card.getName(), Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(itemView.getContext(), "Failed to send request", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                requestsRef.child(user.getUid()).setValue(true)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Push the tailor's ID to the current user's sent requests node
+                                sentreqsref.child(card.getKey()).setValue(true)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Toast indicating successful request
+                                                Toast.makeText(itemView.getContext(), "Request sent for: " + card.getName(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Toast indicating failure to add to sent requests
+                                                Toast.makeText(itemView.getContext(), "Failed to add to sent requests", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Toast indicating failure to send request
+                                Toast.makeText(itemView.getContext(), "Failed to send request", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         }
     }
@@ -201,9 +228,10 @@ class TCardCustomer {
     private String Address;
     private String Contactinfo;
     private String Email;
-    private ImageView ProfilePic;
+    String  ProfilePic;
+    String key;
 
-    public TCardCustomer(Tailor tailor, ImageView profilePic) {
+    public TCardCustomer(Tailor tailor, String profilePic,String key) {
 //    public TCardCustomer(Tailor tailor) {
         this.Name = tailor.getName();
         this.Category = tailor.getCategory();
@@ -211,6 +239,7 @@ class TCardCustomer {
         this.Contactinfo = tailor.getContactInfo();
         this.Email = tailor.getEmail();
         this.ProfilePic=profilePic;
+        this.key=key;
     }
 
     public String getName() {
@@ -228,10 +257,13 @@ class TCardCustomer {
     public String getContactinfo() {
         return Contactinfo;
     }
-    public ImageView getProfilePic() {
+    public String getProfilePic() {
         return ProfilePic;
     }
     public String getEmail() {
         return Email;
+    }
+    public String getKey(){
+        return key;
     }
 }

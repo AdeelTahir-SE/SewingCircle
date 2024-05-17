@@ -148,7 +148,7 @@ RadioButton r1,r2;
 
                             if (category.equals("TAILOR")) {
                                 // Assuming Tailor class has appropriate constructor
-                                Tailor tailor = new Tailor(Name, address, ContactInfo, Email, Password, category, 5345.0, 34.0, "Kurtas", 4.5f,null);
+                                Tailor tailor = new Tailor(Name, address, ContactInfo, Email, Password, category, 5345.0, 34.0,"Kurtas",4.5f, new Customer(), "https://ibb.co/tX1fJSF");
                                 databaseReference.child("Tailor").child(user.getUid()).setValue(tailor)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -170,7 +170,7 @@ RadioButton r1,r2;
                                         });
                             } else if (category.equals("CUSTOMER")) {
                                 // Assuming Customer class has appropriate constructor
-                                Customer customer = new Customer(Name, address, ContactInfo, Email, Password, category, 4234.5, "kurtas", 3.5);
+                                Customer customer = new Customer(Name, address, ContactInfo, Email, Password, category, 4234.5, "kurtas", 3.5,"\"https://ibb.co/tX1fJSF\"");
                                 databaseReference.child("Customer").child(user.getUid()).setValue(customer)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

@@ -8,13 +8,15 @@ public class Tailor extends User{
     private ImageView[] SampleImages;
     private double Ratings;
     private Customer requests;
+    private String imageUrl;
 
-    public Tailor(String name, String address, String contactInfo, String email, String password, String category, double payment, double cost, String speciality,  double ratings,Customer Requests) {
+    public Tailor(String name, String address, String contactInfo, String email, String password, String category, double payment, double cost, String speciality,  double ratings,Customer Requests, String imageUrl) {
         super(name, address, contactInfo, email, password, category, payment);
         Cost = cost;
         Speciality = speciality;
         Ratings = ratings;
         requests = Requests;
+        this.imageUrl = imageUrl;
     }
 
     public double getCost() {
@@ -50,5 +52,12 @@ public class Tailor extends User{
 
     public void setRatings(float ratings) {
         Ratings = ratings;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

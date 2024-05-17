@@ -2,7 +2,9 @@ package com.adeeltahir.sewingcircle;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,11 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +32,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class AccountInfo extends Fragment {
+    private boolean isCustomer;
+
+    // Constructor to accept the boolean argument
+    public AccountInfo(boolean isCustomer) {
+        this.isCustomer = isCustomer;
+    }
+
+    public AccountInfo() {
+
+    }
+
     private DatabaseReference myRef;
+    ImageView imageView;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private TextView userNameTextView, addressTextView, emailTextView, contactInfoTextView;
@@ -53,6 +71,15 @@ public class AccountInfo extends Fragment {
         editButton = view.findViewById(R.id.editButton);
         signOutButton = view.findViewById(R.id.signOutButton);
 
+        imageView = view.findViewById(R.id.imageView);
+        int maxWidth = 100; // Set your desired maximum width
+        int maxHeight = 150; // Set your desired maximum height
+
+// Set the maximum width and maximum height
+        imageView.setMaxWidth(maxWidth);
+        imageView.setMaxHeight(maxHeight);// Assuming the ID of your ImageView is "imageView"
+        imageView.setOnClickListener(v -> changeimg()
+        );
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,6 +177,7 @@ public class AccountInfo extends Fragment {
                     String address = dataSnapshot.child("address").getValue(String.class);
                     String email = dataSnapshot.child("email").getValue(String.class);
                     String contactInfo = dataSnapshot.child("contactInfo").getValue(String.class);
+                    String imageUrl = dataSnapshot.child("imageUrl").getValue(String.class); // Fetch the imageUrl
 
                     // Populate the fields with fetched data
                     userNameTextView.setText(name);
@@ -163,6 +191,17 @@ public class AccountInfo extends Fragment {
 
                     contactInfoTextView.setText(contactInfo);
                     editContactInfoEditText.setText(contactInfo);
+                    int width = 100; // Set your desired maximum width
+                    int height = 150; // Set your desired maximum height
+                    // Load the profile image using Glide
+                    Glide.with(requireContext())
+                            .load(imageUrl)
+                            .placeholder(R.drawable.customer) // Placeholder image while loading
+                            .error(R.drawable.customer)
+                            .override(width, height)// Error image if loading fails
+                            .into(imageView);
+
+
                 }
             }
 
@@ -171,5 +210,34 @@ public class AccountInfo extends Fragment {
                 Log.w(TAG, "DatabaseError: ", databaseError.toException());
             }
         });
+    }
+
+
+    public static final int PICK_IMAGE_REQUEST = 1;
+
+    public void changeimg() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            imageView.setImageURI(imageUri);
+            uploadImageUrlToDatabase(imageUri);
+        }
+    }
+
+    private void uploadImageUrlToDatabase(Uri imageUri) {
+        String type = isCustomer ? "Customer" : "Tailor";
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(type).child(user.getUid()).child("imageUrl");
+
+        databaseReference.setValue(imageUri.toString())
+                .addOnSuccessListener(aVoid -> Toast.makeText(requireContext(), "Image URL uploaded successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to upload image URL", Toast.LENGTH_SHORT).show());
     }
 }

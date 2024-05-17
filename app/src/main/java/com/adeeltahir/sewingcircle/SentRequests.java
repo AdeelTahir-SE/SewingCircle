@@ -13,6 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import static com.adeeltahir.sewingcircle.R.layout.item_sent_requests;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +34,7 @@ public class SentRequests extends Fragment {
     private List<SentRequest> sentRequests;
     private DatabaseReference sentRequestsRef;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,7 +46,7 @@ public class SentRequests extends Fragment {
         recyclerViewSentRequests.setHasFixedSize(true);
 
         // Initialize Firebase Database reference
-        sentRequestsRef = FirebaseDatabase.getInstance().getReference().child("SentRequests");
+        sentRequestsRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("sentRequests");
 
         // Initialize data
         sentRequests = new ArrayList<>();
@@ -65,21 +71,40 @@ public class SentRequests extends Fragment {
 
                 // Iterate through the DataSnapshot to get each sent request
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    // Extract sent request details
-                    String name = snapshot.child("name").getValue(String.class);
-                    String address = snapshot.child("address").getValue(String.class);
-                    String contactInfo = snapshot.child("contactInfo").getValue(String.class);
-                    String email = snapshot.child("email").getValue(String.class);
+                    // Extract tailor ID from the sent request
+                    String tailorId = snapshot.getKey();
 
-                    // Create a SentRequest object
-                    SentRequest sentRequest = new SentRequest(name, address, contactInfo, email);
+                    // Reference to the tailor's node in Firebase
+                    DatabaseReference tailorRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(tailorId);
 
-                    // Add the sent request to the list
-                    sentRequests.add(sentRequest);
+                    // Fetch tailor details
+                    tailorRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                // Extract tailor details
+                                String name = dataSnapshot.child("name").getValue(String.class);
+                                String address = dataSnapshot.child("address").getValue(String.class);
+                                String contactInfo = dataSnapshot.child("contactInfo").getValue(String.class);
+                                String email = dataSnapshot.child("email").getValue(String.class);
+
+                                // Create a SentRequest object
+                                SentRequest sentRequest = new SentRequest(name, address, contactInfo, email, tailorId);
+
+                                // Add the sent request to the list
+                                sentRequests.add(sentRequest);
+
+                                // Update RecyclerView with the fetched data
+                                sentRequestsAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle onCancelled event
+                        }
+                    });
                 }
-
-                // Update RecyclerView with the fetched data
-                sentRequestsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -88,7 +113,8 @@ public class SentRequests extends Fragment {
             }
         });
     }
-}
+
+
 
 
 class SentRequestsAdapter extends RecyclerView.Adapter<SentRequestsAdapter.SentRequestViewHolder> {
@@ -117,13 +143,15 @@ class SentRequestsAdapter extends RecyclerView.Adapter<SentRequestsAdapter.SentR
         return sentRequestsList.size();
     }
 
-    public static class SentRequestViewHolder extends RecyclerView.ViewHolder {
+    public class SentRequestViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView address;
         private TextView contactInfo;
         private TextView email;
         private Button buttonCancel;
 
+        FirebaseAuth auth;
+        FirebaseUser user;
         public SentRequestViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.nameSentRequest);
@@ -134,29 +162,78 @@ class SentRequestsAdapter extends RecyclerView.Adapter<SentRequestsAdapter.SentR
         }
 
         public void bind(SentRequest sentRequest) {
-            name.setText(sentRequest.getName());
-            address.setText(sentRequest.getAddress());
-            contactInfo.setText(sentRequest.getContactInfo());
-            email.setText(sentRequest.getEmail());
+//            if(!buttonCancel.hasOnClickListeners()) {
+                // Set the text of the TextViews (name, address, contactInfo, email
+                name.setText(sentRequest.getName());
+                address.setText(sentRequest.getAddress());
+                contactInfo.setText(sentRequest.getContactInfo());
+                email.setText(sentRequest.getEmail());
 
             buttonCancel.setOnClickListener(v -> {
-                // Handle cancel button click event
-                Toast.makeText(itemView.getContext(), "Cancelled request for " + sentRequest.getName(), Toast.LENGTH_SHORT).show();
-            });
-        }
-    }
-}
+                auth = FirebaseAuth.getInstance();
+                user = auth.getCurrentUser();
+                if (user != null) {
+                    // Get the tailor ID from the card
+                    String tailorId = sentRequest.getTailorId();
+
+                    // Reference to the tailor's requests node in Firebase
+                    DatabaseReference tailorRequestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(tailorId).child("requests");
+
+                    // Remove the user's ID from the tailor's requests node
+                    tailorRequestsRef.child(user.getUid()).removeValue()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Toast indicating request cancellation
+                                    Toast.makeText(itemView.getContext(), "Request canceled ", Toast.LENGTH_SHORT).show();
+
+                                    // Reference to the user's sent requests node in Firebase
+                                    DatabaseReference userSentRequestsRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(user.getUid()).child("sentRequests");
+
+                                    // Remove the tailor's ID from the user's sent requests node
+                                    userSentRequestsRef.child(tailorId).removeValue()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // Toast indicating removal from sent requests
+
+                                                    Toast.makeText(itemView.getContext(), "Request removed from sent requests", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // Toast indicating failure to remove from sent requests
+                                                    Toast.makeText(itemView.getContext(), "Failed to remove from sent requests", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Toast indicating failure to cancel request
+                                    Toast.makeText(itemView.getContext(), "Failed to cancel request", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }});}}}
+
+            }
+
+
  class SentRequest {
     private String name;
     private String address;
     private String contactInfo;
     private String email;
+    private String tailorid;
 
-    public SentRequest(String name, String address, String contactInfo, String email) {
+    public SentRequest(String name, String address, String contactInfo, String email,String tailorid) {
         this.name = name;
         this.address = address;
         this.contactInfo = contactInfo;
         this.email = email;
+        this.tailorid = tailorid;
     }
 
     public String getName() {
@@ -173,5 +250,8 @@ class SentRequestsAdapter extends RecyclerView.Adapter<SentRequestsAdapter.SentR
 
     public String getEmail() {
         return email;
+    }
+    public String getTailorId() {
+        return tailorid;
     }
 }

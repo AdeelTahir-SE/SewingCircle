@@ -114,17 +114,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bottomNavigationView.getMenu().clear();
-        if (!customer) {
+        if (customer) {
             bottomNavigationView.inflateMenu(R.menu.bottom_nav_menucustomer);
-        } else if(customer) {
+        } else if(!customer) {
             bottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
         }
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        if (customer) {
+        if (!customer) {
             ft.add(R.id.fragment_container, new CurrentCustomer());
-        } else if (!customer) {
+        } else if (customer) {
             ft.add(R.id.fragment_container, new CurrentTailor());
         }
         ft.commit();
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if (customer) {
+                if (!customer) {
                     if (id == R.id.home1) {
                         replace_fragment(new HomeFragment());
                     } else if (id == R.id.CurrentCustomer1) {
@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity {
                     } else if (id == R.id.PreviousOrders1) {
                         replace_fragment(new PreviousCustomers());
                     } else if (id == R.id.Accountinfo1) {
-                        replace_fragment(new AccountInfo());
+                        replace_fragment(new AccountInfo(customer));
                     } else if (id == R.id.Requests1) {
                         replace_fragment(new Requests());
                     }
                     return true;
-                } else if (!customer) {
+                } else if (customer) {
                     if (id == R.id.home1_customer) {
                         replace_fragment(new HomeFragmentCustomer());
                     } else if (id == R.id.CurrentCustomer_customer) {
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     } else if (id == R.id.PreviousOrders1_customer) {
                         replace_fragment(new PreviousTailors());
                     } else if (id == R.id.Accountinfo1_customer) {
-                        replace_fragment(new AccountInfo());
+                        replace_fragment(new AccountInfo(customer));
                     } else if (id == R.id.Requests1_customer) {
                         replace_fragment(new SentRequests());
                     }
