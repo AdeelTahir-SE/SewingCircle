@@ -21,12 +21,28 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:text="Customer Name" />
+        <TextView
+            android:id="@+id/textViewContactInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CustomerContactinfo" />
 
         <TextView
             android:id="@+id/textViewAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address" />
+        <TextView
+            android:id="@+id/Emailcustomer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email" />
+        <Button
+            android:id="@+id/currentclient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Set current customer" />
 
         <!-- Other details about the customer -->
         <!-- Add more TextViews or other views as needed -->

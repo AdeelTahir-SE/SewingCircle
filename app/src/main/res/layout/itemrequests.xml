@@ -15,7 +15,7 @@
 
         <!-- Customer Name -->
         <TextView
-            android:id="@+id/Namereq"
+            android:id="@+id/Namereqr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -23,18 +23,18 @@
             android:text="Customer Name" />
 
         <TextView
-            android:id="@+id/textViewAddress"
+            android:id="@+id/textViewAddressr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address" />
         <TextView
-            android:id="@+id/Contactinforeq"
+            android:id="@+id/Contactinforeqr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Contactinfo" />
 
         <TextView
-            android:id="@+id/Emailreq"
+            android:id="@+id/Emailreqr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email" />

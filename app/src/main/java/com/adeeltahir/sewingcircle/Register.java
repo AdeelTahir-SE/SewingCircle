@@ -104,6 +104,7 @@ RadioButton r1,r2;
 
     public void Submitreg (View view) {
         try {
+            Toast.makeText(this, "wait a sec...", Toast.LENGTH_SHORT).show();
 
         Category="";
         String address= Address.getText().toString();

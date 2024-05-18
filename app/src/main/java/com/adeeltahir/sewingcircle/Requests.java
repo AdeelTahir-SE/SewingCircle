@@ -1,5 +1,6 @@
 package com.adeeltahir.sewingcircle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +36,7 @@ public class Requests extends Fragment {
 
     private RecyclerView recyclerViewRequests;
     private RequestsAdapter requestsAdapter;
-    private List<Request> Requests;
-    private List<Request> requestsList; // Initialize this list
+    private List<Request> requestsList;
     private DatabaseReference requestsRef;
     private DatabaseReference customerRef;
 
@@ -40,59 +44,47 @@ public class Requests extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests, container, false);
-
-        // Initialize RecyclerView
         recyclerViewRequests = view.findViewById(R.id.recyclerViewReqs);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         recyclerViewRequests.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRequests.setHasFixedSize(true);
 
-        // Initialize data
-        Requests = new ArrayList<>();
-        requestsList = new ArrayList<>(); // Initialize requestsList
-
-        // Initialize adapter
-        requestsAdapter = new RequestsAdapter(Requests);
-
-        // Set adapter to RecyclerView
+        requestsList = new ArrayList<>();
+        requestsAdapter = new RequestsAdapter(requestsList);
         recyclerViewRequests.setAdapter(requestsAdapter);
 
-        // Add some sample previous customers
-        // Initialize the database reference
-        customerRef = FirebaseDatabase.getInstance().getReference().child("Customers");
-        requestsRef = FirebaseDatabase.getInstance().getReference().child("Tailors").child("requests");
+        customerRef = FirebaseDatabase.getInstance().getReference().child("Customer");
+        requestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("requests");
 
-        // Add ValueEventListener to fetch requests from the database
         requestsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                requestsList.clear(); // Clear the list before adding new requests
+                requestsList.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String requestId = snapshot.getKey(); // Get the request ID
-
-                    // Fetch customer details for the request ID
+                    String requestId = snapshot.getKey();
                     customerRef.child(requestId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot customerSnapshot) {
                             if (customerSnapshot.exists()) {
-                                // Extract customer details
                                 String name = customerSnapshot.child("name").getValue(String.class);
                                 String address = customerSnapshot.child("address").getValue(String.class);
                                 String contactInfo = customerSnapshot.child("contactInfo").getValue(String.class);
                                 String email = customerSnapshot.child("email").getValue(String.class);
 
-                                // Create a Request object and add it to the list
-                                Request request = new Request(name, address, contactInfo, email);
-                                requestsList.add(request);
-
-                                // Notify the adapter that the data set has changed
+                                requestsList.add(new Request(name, address, contactInfo, email, requestId));
                                 requestsAdapter.notifyDataSetChanged();
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle onCancelled event
                             Log.e("RequestsFragment", "Error fetching customer details: " + databaseError.getMessage());
                         }
                     });
@@ -101,25 +93,19 @@ public class Requests extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle onCancelled event
                 Log.e("RequestsFragment", "Error fetching requests: " + databaseError.getMessage());
             }
         });
-
-        return view;
     }
 }
 
 class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerViewHolder> {
 
-
-    private static List<Request> Reqslist;
+    private List<Request> requestsList;
 
     public RequestsAdapter(List<Request> reqs) {
-        this.Reqslist = reqs;
+        this.requestsList = reqs;
     }
-
-
 
     @NonNull
     @Override
@@ -130,74 +116,120 @@ class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerV
 
     @Override
     public void onBindViewHolder(@NonNull ReqsCustomerViewHolder holder, int position) {
-        Request r1 = Reqslist.get(position);
-        holder.bind(r1);
+        Request request = requestsList.get(position);
+        holder.bind(request);
     }
+
     @Override
     public int getItemCount() {
-        return Reqslist.size();
+        return requestsList.size();
     }
 
     public static class ReqsCustomerViewHolder extends RecyclerView.ViewHolder {
-        Bundle bundle;
         private TextView Name;
         private TextView Address;
         private TextView Contactinfo;
         private TextView Email;
         private Button buttonAccept;
+
         public ReqsCustomerViewHolder(@NonNull View itemView) {
             super(itemView);
-            Name = itemView.findViewById(R.id.Namereq);
-            Address = itemView.findViewById(R.id.textViewAddress);
-            Contactinfo = itemView.findViewById(R.id.Contactinforeq);
-            Email = itemView.findViewById(R.id.Emailreq);
+            Name = itemView.findViewById(R.id.Namereqr);
+            Address = itemView.findViewById(R.id.textViewAddressr);
+            Contactinfo = itemView.findViewById(R.id.Contactinforeqr);
+            Email = itemView.findViewById(R.id.Emailreqr);
             buttonAccept = itemView.findViewById(R.id.buttonAccept);
-
         }
 
-
-        public void bind(Request r) {
-            Name.setText(r.getName());
-            Address.setText(r.getAddress());
-            Contactinfo.setText(r.getContactinfo());
-            Email.setText(r.getEmail());
+        public void bind(Request request) {
+            Name.setText(request.getName());
+            Address.setText(request.getAddress());
+            Contactinfo.setText(request.getContactinfo());
+            Email.setText(request.getEmail());
 
             buttonAccept.setOnClickListener(v -> {
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                FirebaseUser user = auth.getCurrentUser();
+                if (user != null) {
+                    DatabaseReference tailorRequestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid()).child("requests");
+                    DatabaseReference tailorcurrentcustomers = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid()).child("CurrentCustomers");
+
+                    tailorcurrentcustomers.child(request.getRequestId()).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(v.getContext(), "Customer request accepted", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(v.getContext(), "Failed to write Customer data " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    tailorRequestsRef.child(request.getRequestId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(itemView.getContext(), "Request Accepted", Toast.LENGTH_SHORT).show();
+
+                            DatabaseReference userSentRequestsRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(request.getRequestId()).child("sentRequests");
+
+                            userSentRequestsRef.child(user.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(itemView.getContext(), "Request Accepted from requests", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(itemView.getContext(), "Failed to remove from sent requests", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(itemView.getContext(), "Failed to cancel request", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
                 Toast.makeText(v.getContext(), "Accepted the request", Toast.LENGTH_SHORT).show();
             });
         }
     }
 }
 
-
 class Request {
     private String Name;
-
     private String Address;
     private String Contactinfo;
     private String Email;
+    private String requestId;
 
-
-    public Request(String Name , String Address, String Contactinfo, String Email) {
+    public Request(String Name, String Address, String Contactinfo, String Email, String requestId) {
         this.Name = Name;
-
         this.Address = Address;
         this.Contactinfo = Contactinfo;
         this.Email = Email;
+        this.requestId = requestId;
+    }
 
+    public String getRequestId() {
+        return requestId;
     }
 
     public String getName() {
         return Name;
     }
+
     public String getAddress() {
         return Address;
     }
+
     public String getContactinfo() {
         return Contactinfo;
     }
+
     public String getEmail() {
         return Email;
     }
 }
-

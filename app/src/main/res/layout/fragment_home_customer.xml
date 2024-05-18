@@ -12,11 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ImageView
-        android:id="@+id/imge"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/img"></ImageView>
 
 
     <androidx.recyclerview.widget.RecyclerView

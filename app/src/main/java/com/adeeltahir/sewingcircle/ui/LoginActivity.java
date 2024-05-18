@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.et_password);
     }
     public void Submit( View view) {
+        Toast.makeText(this, "wait a sec...", Toast.LENGTH_SHORT).show();
 
         String Email = email.getText().toString();
         String Password = password.getText().toString();

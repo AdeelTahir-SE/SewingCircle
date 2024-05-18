@@ -166,13 +166,11 @@ class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
             HEmail.setText("Email:");
             HCategory.setText("Category:");
 
-            int width = 100; // Set your desired maximum width
-            int height = 150;
             Glide.with(itemView.getContext())
                     .load(tailor.getImageUrl())
                     .placeholder(R.drawable.customer)
                     .error(R.drawable.customer)
-                    .override(width, height)
+
                     .into(mProfilePicImageView);
 
 
