@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,8 @@ import java.util.List;
 public class CurrentCustomer extends Fragment {
 
     private TextView headerTextView;
+    private String senderId, receiverId;
+    private DatabaseReference myRef;
     private ListView messagesListView;
     private EditText messageInputEditText;
     private Button sendMessageButton;
@@ -52,13 +55,15 @@ public class CurrentCustomer extends Fragment {
         adapter = new CustomAdapter(messages);
         messagesListView.setAdapter(adapter);
 
+        // Initialize Firebase references
+        myRef = FirebaseDatabase.getInstance().getReference().child("Chats");
+        senderId = FirebaseAuth.getInstance().getUid();
+
+        // Set up message sending
         sendMessageButton.setOnClickListener(v -> {
-            String message = messageInputEditText.getText().toString();
+            String message = messageInputEditText.getText().toString().trim();
             if (!message.isEmpty()) {
-                messages.add(message);
-                adapter.notifyDataSetChanged();
-                messageInputEditText.getText().clear();
-                messagesListView.smoothScrollToPosition(messages.size() - 1);
+                sendMessage(message);
             }
         });
 
@@ -72,6 +77,7 @@ public class CurrentCustomer extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String currentCustomerId = dataSnapshot.getValue(String.class);
+                    receiverId = currentCustomerId;
                     if (currentCustomerId != null) {
                         // Fetch customer name from Customer node
                         customerRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(currentCustomerId);
@@ -81,6 +87,7 @@ public class CurrentCustomer extends Fragment {
                                 String customerName = snapshot.child("name").getValue(String.class);
                                 if (customerName != null) {
                                     headerTextView.setText(customerName);
+                                    loadMessages();
                                 } else {
                                     headerTextView.setText("Unknown Customer");
                                 }
@@ -106,6 +113,48 @@ public class CurrentCustomer extends Fragment {
         }
 
         return view;
+    }
+
+    private void sendMessage(String message) {
+        String chatId = receiverId + senderId; // Reverse the order for customer-tailor chat ID
+        DatabaseReference newRef = myRef.child(chatId).push();
+        newRef.setValue("Tailor: " + message).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                messageInputEditText.getText().clear();
+                messagesListView.smoothScrollToPosition(messages.size() - 1);
+            } else {
+                Toast.makeText(getContext(), "Failed to send message", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadMessages() {
+        String chatId = senderId + receiverId;
+        DatabaseReference chatRef = myRef.child(chatId);
+
+        chatRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                String message = snapshot.getValue(String.class);
+                messages.add(message);
+                adapter.notifyDataSetChanged();
+                messagesListView.smoothScrollToPosition(messages.size() - 1);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("CurrentCustomer", "Failed to load messages: " + error.getMessage());
+            }
+        });
     }
 
     // Custom Adapter for ListView

@@ -1,6 +1,7 @@
 package com.adeeltahir.sewingcircle;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import android.widget.Button;
 import android.widget.TextView;
+
 
 
 public class PreviousTailors extends Fragment {
@@ -54,7 +56,8 @@ public class PreviousTailors extends Fragment {
         previousTailorsAdapter = new PreviousTailorsAdapter(previousTailors);
         recyclerViewPreviousTailors.setAdapter(previousTailorsAdapter);
 
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(user.getUid()).child("PreviousTailors");
+        // Fetch data from Firebase
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(user.getUid()).child("CurrentTailors");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -63,15 +66,19 @@ public class PreviousTailors extends Fragment {
                     String tailorId = dataSnapshot.getKey();
                     if (tailorId != null) {
                         // Fetch tailor details from "Tailors" node
-                        DatabaseReference tailorRef = FirebaseDatabase.getInstance().getReference().child("Tailors").child(tailorId);
+                        DatabaseReference tailorRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(tailorId);
                         tailorRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot tailorSnapshot) {
-                                PreviousTailor tailor = tailorSnapshot.getValue(PreviousTailor.class);
-                                if (tailor != null) {
-                                    previousTailors.add(tailor);
+
+                                String tailorName = tailorSnapshot.child("name").getValue(String.class);
+                                String tailorAddress = tailorSnapshot.child("address").getValue(String.class);
+                                String tailorContactInfo = tailorSnapshot.child("contactInfo").getValue(String.class);
+                                String tailorEmail = tailorSnapshot.child("email").getValue(String.class);
+
+                                    previousTailors.add(new PreviousTailor(tailorId, tailorName, tailorAddress, tailorEmail, tailorContactInfo));
                                     previousTailorsAdapter.notifyDataSetChanged();
-                                }
+
                             }
 
                             @Override
@@ -92,6 +99,7 @@ public class PreviousTailors extends Fragment {
         return view;
     }
 }
+
 
 
 
@@ -132,11 +140,11 @@ public class PreviousTailors extends Fragment {
 
         public PreviousTailorViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewName = itemView.findViewById(R.id.textViewName);
-            textViewAddress = itemView.findViewById(R.id.textViewAddress);
-            textViewEmail = itemView.findViewById(R.id.Emailcustomer);
-            textViewContactInfo = itemView.findViewById(R.id.textViewContactInfo);
-            currentClientButton = itemView.findViewById(R.id.currentclient);
+            textViewName = itemView.findViewById(R.id.textViewNamet);
+            textViewAddress = itemView.findViewById(R.id.textViewAddresst);
+            textViewEmail = itemView.findViewById(R.id.textViewEmailaddresst);
+            textViewContactInfo = itemView.findViewById(R.id.textViewcontactinformationt);
+            currentClientButton = itemView.findViewById(R.id.currenttailor);
         }
 
         public void bind(final PreviousTailor previousTailor) {
@@ -150,23 +158,43 @@ public class PreviousTailors extends Fragment {
                 public void onClick(View v) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
-                        DatabaseReference currentTailorRef = FirebaseDatabase.getInstance()
-                                .getReference()
-                                .child("Customer")
-                                .child(user.getUid())
-                                .child("CurrentTailor");
+                        String userUid = user.getUid();
+                        String tailorId = previousTailor.getId();
+                        String tailorName = previousTailor.getName();
 
-                        currentTailorRef.setValue(previousTailor.getId())
-                                .addOnSuccessListener(aVoid -> Toast.makeText(v.getContext(), "Set current tailor: " + previousTailor.getName(), Toast.LENGTH_SHORT).show())
-                                .addOnFailureListener(e -> Toast.makeText(v.getContext(), "Failed to set current tailor", Toast.LENGTH_SHORT).show());
+                        // Log statements for debugging
+                        Log.d("CurrentClientButton", "User UID: " + userUid);
+                        Log.d("CurrentClientButton", "Tailor ID: " + tailorId);
+                        Log.d("CurrentClientButton", "Tailor Name: " + tailorName);
+
+                        if (tailorId != null && tailorName != null) {
+                            DatabaseReference currentTailorRef = FirebaseDatabase.getInstance()
+                                    .getReference()
+                                    .child("Customer")
+                                    .child(userUid)
+                                    .child("CurrentTailor");
+
+                            currentTailorRef.setValue(tailorId)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("CurrentClientButton", "Successfully set current tailor");
+                                        Toast.makeText(v.getContext(), "Set current tailor: " + tailorName, Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("CurrentClientButton", "Failed to set current tailor: " + e.getMessage());
+                                        Toast.makeText(v.getContext(), "Failed to set current tailor", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Log.e("CurrentClientButton", "Previous tailor ID or Name is null");
+                            Toast.makeText(v.getContext(), "Previous tailor information is missing", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
+                        Log.e("CurrentClientButton", "User not authenticated");
                         Toast.makeText(v.getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
                     }
-                }
-            });
+                }});
+            }
         }
-    }
-}
+        }
 
 
  class PreviousTailor {

@@ -11,7 +11,7 @@
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PreviousTailors"
+        android:text="Current Tailors"
         android:gravity="center"
         android:layout_margin="18sp"
         android:textSize="24sp"

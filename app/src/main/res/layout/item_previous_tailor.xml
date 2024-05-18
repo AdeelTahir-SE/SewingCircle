@@ -15,7 +15,7 @@
 
         <!-- Customer Name -->
         <TextView
-            android:id="@+id/textViewName"
+            android:id="@+id/textViewNamet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -23,20 +23,26 @@
             android:text="Tailor Name" />
 
         <TextView
-            android:id="@+id/textViewAddress"
+            android:id="@+id/textViewAddresst"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address" />
         <TextView
-            android:id="@+id/textViewcontactinformation"
+            android:id="@+id/textViewcontactinformationt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Contactinfo" />
         <TextView
-            android:id="@+id/textViewEmailaddress"
+            android:id="@+id/textViewEmailaddresst"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email" />
+        <Button
+            android:id="@+id/currenttailor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Set current Tailor" />
 
         <!-- Other details about the customer -->
         <!-- Add more TextViews or other views as needed -->

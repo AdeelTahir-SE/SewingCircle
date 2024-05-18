@@ -1,6 +1,7 @@
 package com.adeeltahir.sewingcircle;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +10,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +31,15 @@ import java.util.List;
 public class CurrentTailor extends Fragment {
 
     private TextView headerTextView;
+    private String senderId, receiverId;
+    private DatabaseReference myRef;
     private ListView messagesListView;
     private EditText messageInputEditText;
     private Button sendMessageButton;
     private CustomAdapter adapter;
     private List<String> messages = new ArrayList<>();
+    private DatabaseReference tailorRef;
+    private DatabaseReference customerRef;
 
     @Nullable
     @Override
@@ -40,18 +55,113 @@ public class CurrentTailor extends Fragment {
         adapter = new CustomAdapter(messages);
         messagesListView.setAdapter(adapter);
 
+        // Initialize Firebase references
+        myRef = FirebaseDatabase.getInstance().getReference().child("Chats");
+        senderId = FirebaseAuth.getInstance().getUid();
+
+        // Set up message sending
         sendMessageButton.setOnClickListener(v -> {
-            String message = messageInputEditText.getText().toString();
+            String message = messageInputEditText.getText().toString().trim();
             if (!message.isEmpty()) {
-                messages.add(message);
-                adapter.notifyDataSetChanged();
-                messageInputEditText.getText().clear();
-                messagesListView.smoothScrollToPosition(messages.size() - 1);
+                sendMessage(message);
             }
         });
 
+        // Fetch currentTailorId from Customer node
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            String customerId = user.getUid();
+            customerRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(customerId);
+            customerRef.child("CurrentTailor").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String currentTailorId = dataSnapshot.getValue(String.class);
+                    receiverId = currentTailorId;
+                    if (currentTailorId != null) {
+                        // Fetch tailor name from Tailor node
+                        tailorRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(currentTailorId);
+                        tailorRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String tailorName = snapshot.child("name").getValue(String.class);
+                                if (tailorName != null) {
+                                    headerTextView.setText(tailorName);
+                                    loadMessages();
+                                } else {
+                                    headerTextView.setText("Unknown Tailor");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e("CurrentTailor", "Error fetching tailor name: " + error.getMessage());
+                                headerTextView.setText("Error Loading Tailor");
+                            }
+                        });
+                    } else {
+                        headerTextView.setText("No Current Tailor");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("CurrentTailor", "Error fetching currentTailorId: " + databaseError.getMessage());
+                    headerTextView.setText("Error Loading Tailor");
+                }
+            });
+        }
+
         return view;
     }
+
+    private void sendMessage(String message) {
+        String chatId = senderId + receiverId;
+        DatabaseReference newRef = myRef.child(chatId).push();
+        newRef.setValue("Customer: " + message).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                messageInputEditText.getText().clear();
+                messagesListView.smoothScrollToPosition(messages.size() - 1);
+            } else {
+                Toast.makeText(getContext(), "Failed to send message", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void loadMessages() {
+        String chatId =  receiverId+senderId   ; // Correct the order for tailor-customer chat ID
+        DatabaseReference chatRef = myRef.child(chatId);
+
+        chatRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                String message = snapshot.getValue(String.class);
+                messages.add(message);
+                adapter.notifyDataSetChanged();
+                messagesListView.smoothScrollToPosition(messages.size() - 1);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("CurrentTailor", "Failed to load messages: " + error.getMessage());
+            }
+        });
+    }
+
+
 
     // Custom Adapter for ListView
     private class CustomAdapter extends ArrayAdapter<String> {

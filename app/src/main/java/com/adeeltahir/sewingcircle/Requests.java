@@ -148,51 +148,66 @@ class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerV
             Email.setText(request.getEmail());
 
             buttonAccept.setOnClickListener(v -> {
+
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 FirebaseUser user = auth.getCurrentUser();
                 if (user != null) {
                     DatabaseReference tailorRequestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid()).child("requests");
-                    DatabaseReference tailorcurrentcustomers = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid()).child("CurrentCustomers");
+                    DatabaseReference tailorCurrentCustomers = FirebaseDatabase.getInstance().getReference().child("Tailor").child(user.getUid()).child("CurrentCustomers");
+                    DatabaseReference customerCurrentTailorsRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(request.getRequestId()).child("CurrentTailors").child(user.getUid());
 
-                    tailorcurrentcustomers.child(request.getRequestId()).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(v.getContext(), "Customer request accepted", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(v.getContext(), "Failed to write Customer data " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    // Add current tailor ID to Customer's CurrentTailors node
+                    customerCurrentTailorsRef.setValue(true)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(v.getContext(), "Added current tailor ID to Customer's CurrentTailors node", Toast.LENGTH_SHORT).show();
 
-                    tailorRequestsRef.child(request.getRequestId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(itemView.getContext(), "Request Accepted", Toast.LENGTH_SHORT).show();
+                                // Proceed with other operations only if adding to CurrentTailors is successful
+                                tailorCurrentCustomers.child(request.getRequestId()).setValue(true)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(v.getContext(), "Customer request accepted", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(v.getContext(), "Failed to write Customer data " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
 
-                            DatabaseReference userSentRequestsRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(request.getRequestId()).child("sentRequests");
+                                tailorRequestsRef.child(request.getRequestId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(itemView.getContext(), "Request Accepted", Toast.LENGTH_SHORT).show();
 
-                            userSentRequestsRef.child(user.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(itemView.getContext(), "Request Accepted from requests", Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(itemView.getContext(), "Failed to remove from sent requests", Toast.LENGTH_SHORT).show();
-                                }
+                                        DatabaseReference userSentRequestsRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(request.getRequestId()).child("sentRequests");
+
+                                        userSentRequestsRef.child(user.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(itemView.getContext(), "Request Accepted from requests", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(itemView.getContext(), "Failed to remove from sent requests", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(itemView.getContext(), "Failed to cancel request", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(v.getContext(), "Failed to add current tailor ID to Customer's CurrentTailors node: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(itemView.getContext(), "Failed to cancel request", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                } else {
+                    Toast.makeText(v.getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(v.getContext(), "Accepted the request", Toast.LENGTH_SHORT).show();
             });
         }
     }
