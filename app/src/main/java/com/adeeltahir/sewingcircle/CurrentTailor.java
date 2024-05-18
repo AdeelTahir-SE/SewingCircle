@@ -130,7 +130,7 @@ public class CurrentTailor extends Fragment {
 
 
     private void loadMessages() {
-        String chatId =  receiverId+senderId   ; // Correct the order for tailor-customer chat ID
+        String chatId =  senderId+receiverId   ; // Correct the order for tailor-customer chat ID
         DatabaseReference chatRef = myRef.child(chatId);
 
         chatRef.addChildEventListener(new ChildEventListener() {

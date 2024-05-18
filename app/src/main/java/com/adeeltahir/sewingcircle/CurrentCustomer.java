@@ -129,7 +129,7 @@ public class CurrentCustomer extends Fragment {
     }
 
     private void loadMessages() {
-        String chatId = senderId + receiverId;
+        String chatId = receiverId+senderId  ;
         DatabaseReference chatRef = myRef.child(chatId);
 
         chatRef.addChildEventListener(new ChildEventListener() {
