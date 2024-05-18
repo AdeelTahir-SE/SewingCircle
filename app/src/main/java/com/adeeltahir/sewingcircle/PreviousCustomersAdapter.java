@@ -80,7 +80,7 @@ public class PreviousCustomersAdapter extends RecyclerView.Adapter<PreviousCusto
                                 .child("CurrentCustomer");
 
                         // Set the value of the current customer's node to the selected customer's ID
-                        currentCustomerRef.child(previousCustomer.getId()).setValue(true)
+                        currentCustomerRef.setValue(previousCustomer.getId())
                                 .addOnSuccessListener(aVoid -> Toast.makeText(v.getContext(), "Set current customer: " + previousCustomer.getName(), Toast.LENGTH_SHORT).show())
                                 .addOnFailureListener(e -> Toast.makeText(v.getContext(), "Failed to set current customer", Toast.LENGTH_SHORT).show());
                     } else {
