@@ -1,6 +1,7 @@
 package com.adeeltahir.sewingcircle;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,15 +10,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentCustomer extends Fragment  {
+public class CurrentCustomer extends Fragment {
 
     private TextView headerTextView;
     private ListView messagesListView;
@@ -25,8 +35,8 @@ public class CurrentCustomer extends Fragment  {
     private Button sendMessageButton;
     private CustomAdapter adapter;
     private List<String> messages = new ArrayList<>();
-
-    Bundle bundle;
+    private DatabaseReference tailorRef;
+    private DatabaseReference customerRef;
 
     @Nullable
     @Override
@@ -52,13 +62,51 @@ public class CurrentCustomer extends Fragment  {
             }
         });
 
+        // Fetch currentCustomerId from Tailor node
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            String tailorId = user.getUid();
+            tailorRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(tailorId);
+            tailorRef.child("CurrentCustomer").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String currentCustomerId = dataSnapshot.getValue(String.class);
+                    if (currentCustomerId != null) {
+                        // Fetch customer name from Customer node
+                        customerRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(currentCustomerId);
+                        customerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String customerName = snapshot.child("name").getValue(String.class);
+                                if (customerName != null) {
+                                    headerTextView.setText(customerName);
+                                } else {
+                                    headerTextView.setText("Unknown Customer");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e("CurrentCustomer", "Error fetching customer name: " + error.getMessage());
+                                headerTextView.setText("Error Loading Customer");
+                            }
+                        });
+                    } else {
+                        headerTextView.setText("No Current Customer");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("CurrentCustomer", "Error fetching currentCustomerId: " + databaseError.getMessage());
+                    headerTextView.setText("Error Loading Customer");
+                }
+            });
+        }
+
         return view;
-
     }
-
-
-
-
 
     // Custom Adapter for ListView
     private class CustomAdapter extends ArrayAdapter<String> {
@@ -88,7 +136,6 @@ public class CurrentCustomer extends Fragment  {
             viewHolder.messageTextView.setText(message);
 
             return convertView;
-
         }
 
         private class ViewHolder {
@@ -96,4 +143,3 @@ public class CurrentCustomer extends Fragment  {
         }
     }
 }
-
