@@ -38,14 +38,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email" />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
         <Button
             android:id="@+id/buttonAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Accept"
-
+            android:layout_marginEnd="16dp"
             android:layout_gravity="right"></Button>
+        <Button
+
+            android:id="@+id/buttoncancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginStart="16dp"
+            android:onClick="Requestbutton"
+            android:text="Cancel"></Button>
+    </LinearLayout>
         <!-- Other details about the customer -->
         <!-- Add more TextViews or other views as needed -->
 

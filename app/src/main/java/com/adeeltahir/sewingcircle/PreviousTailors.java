@@ -10,6 +10,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,7 +56,7 @@ public class PreviousTailors extends Fragment {
         previousTailors = new ArrayList<>();
 
         // Initialize adapter
-        previousTailorsAdapter = new PreviousTailorsAdapter(previousTailors);
+        previousTailorsAdapter = new PreviousTailorsAdapter(previousTailors,this);
         recyclerViewPreviousTailors.setAdapter(previousTailorsAdapter);
 
         // Fetch data from Firebase
@@ -107,9 +110,11 @@ public class PreviousTailors extends Fragment {
  class PreviousTailorsAdapter extends RecyclerView.Adapter<PreviousTailorsAdapter.PreviousTailorViewHolder> {
 
     private List<PreviousTailor> previousTailors;
+     private Fragment fragment;
 
-    public PreviousTailorsAdapter(List<PreviousTailor> previousTailors) {
+     public PreviousTailorsAdapter(List<PreviousTailor> previousTailors, Fragment fragment) {
         this.previousTailors = previousTailors;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -122,7 +127,7 @@ public class PreviousTailors extends Fragment {
     @Override
     public void onBindViewHolder(@NonNull PreviousTailorViewHolder holder, int position) {
         PreviousTailor previousTailor = previousTailors.get(position);
-        holder.bind(previousTailor);
+        holder.bind(previousTailor,fragment);
     }
 
     @Override
@@ -147,7 +152,7 @@ public class PreviousTailors extends Fragment {
             currentClientButton = itemView.findViewById(R.id.currenttailor);
         }
 
-        public void bind(final PreviousTailor previousTailor) {
+        public void bind(final PreviousTailor previousTailor,final Fragment fragment) {
             textViewName.setText(previousTailor.getName());
             textViewAddress.setText(previousTailor.getAddress());
             textViewEmail.setText(previousTailor.getEmail());
@@ -176,6 +181,8 @@ public class PreviousTailors extends Fragment {
 
                             currentTailorRef.setValue(tailorId)
                                     .addOnSuccessListener(aVoid -> {
+                                        // Get the activity context
+                                        switchFragment(fragment);
                                         Log.d("CurrentClientButton", "Successfully set current tailor");
                                         Toast.makeText(v.getContext(), "Set current tailor: " + tailorName, Toast.LENGTH_SHORT).show();
                                     })
@@ -193,6 +200,14 @@ public class PreviousTailors extends Fragment {
                     }
                 }});
             }
+        private void switchFragment(Fragment fragment) {
+            FragmentManager fragmentManager = fragment.getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            CurrentTailor newFragment = new CurrentTailor(); // Replace with your target fragment
+            fragmentTransaction.replace(R.id.fragment_container, newFragment); // replace with your container id
+            fragmentTransaction.addToBackStack(null); // Optional: if you want to add to backstack
+            fragmentTransaction.commit();
+        }
         }
         }
 

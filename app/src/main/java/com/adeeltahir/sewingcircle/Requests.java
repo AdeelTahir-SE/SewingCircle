@@ -131,6 +131,8 @@ class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerV
         private TextView Contactinfo;
         private TextView Email;
         private Button buttonAccept;
+        private Button buttoncancel;
+
 
         public ReqsCustomerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -139,7 +141,9 @@ class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerV
             Contactinfo = itemView.findViewById(R.id.Contactinforeqr);
             Email = itemView.findViewById(R.id.Emailreqr);
             buttonAccept = itemView.findViewById(R.id.buttonAccept);
+            buttoncancel =itemView.findViewById(R.id.buttoncancel);
         }
+
 
         public void bind(Request request) {
             Name.setText(request.getName());
@@ -207,6 +211,61 @@ class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerV
                             });
                 } else {
                     Toast.makeText(v.getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            buttoncancel.setOnClickListener(v -> {
+                FirebaseAuth auth;
+                FirebaseUser user;
+                auth = FirebaseAuth.getInstance();
+                user = auth.getCurrentUser();
+                if (user != null) {
+                    // Get the tailor ID from the card
+                    String tailorId = user.getUid();
+
+                    // Reference to the tailor's requests node in Firebase
+                    DatabaseReference tailorRequestsRef = FirebaseDatabase.getInstance().getReference().child("Tailor").child(tailorId).child("requests");
+
+                    // Remove the user's ID from the tailor's requests node
+                    tailorRequestsRef.child(user.getUid()).removeValue()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Toast indicating request cancellation
+                                    Toast.makeText(itemView.getContext(), "Request canceled ", Toast.LENGTH_SHORT).show();
+
+                                    // Reference to the user's sent requests node in Firebase
+                                    DatabaseReference userSentRequestsRef = FirebaseDatabase.getInstance().getReference().child("Customer").child(request.getRequestId()).child("sentRequests");
+
+                                    // Remove the tailor's ID from the user's sent requests node
+                                    userSentRequestsRef.child(tailorId).removeValue()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // Toast indicating removal from sent requests
+
+                                                    Toast.makeText(itemView.getContext(), "Request removed from sent requests", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // Toast indicating failure to remove from sent requests
+                                                    Toast.makeText(itemView.getContext(), "Failed to remove from sent requests", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Toast indicating failure to cancel request
+                                    Toast.makeText(itemView.getContext(), "Failed to cancel request", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    // Toast indicating user not authenticated
+                    Toast.makeText(itemView.getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
                 }
             });
         }

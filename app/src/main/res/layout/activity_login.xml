@@ -51,6 +51,7 @@
 
             <EditText
                 android:id="@+id/et_email"
+                android:background="@drawable/roundcornersextra"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -68,7 +69,10 @@
 
             <EditText
                 android:id="@+id/et_password"
+                android:background="@drawable/roundcornersextra"
                 android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:padding="8dp"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword" />
 
@@ -89,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="Previous"
-                android:text="Previous" />
+                android:text="Go back" />
 
         </LinearLayout>
 

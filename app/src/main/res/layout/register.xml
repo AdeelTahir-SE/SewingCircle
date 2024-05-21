@@ -22,7 +22,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
+        android:layout_marginBottom="19sp"
         app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
@@ -31,6 +31,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="4sp"
+
+
             app:layout_constraintTop_toTopOf="parent">
 
        <LinearLayout
@@ -42,16 +45,28 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="16dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_marginBottom="16dp">
+    <ImageView
+        android:layout_width="50sp"
+        android:layout_height="50sp"
 
-
+        android:src="@drawable/img"></ImageView>
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
+
                 android:text="Sign in"
-                android:textSize="24sp"
+
+                android:textSize="28sp"
                 android:textStyle="bold" />
+
+</LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -168,14 +183,25 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="number" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:onClick="onLoginClick"
-                android:text="                     Already registered? Login here" />
+                android:text="                     Already registered? " />
 
+            <TextView
+                android:textColor="@color/light_blue_600"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:onClick="onLoginClick"
+                android:text=" Login here" />
+            </LinearLayout>
             <Button
                 android:id="@+id/submit_button"
                 android:layout_width="match_parent"
@@ -202,6 +228,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center"
+            android:layout_marginBottom="4sp"
+
             android:orientation="horizontal">
 
             <ImageView

@@ -29,8 +29,10 @@
             android:layout_width="100dp"
             android:layout_height="150dp"
             android:layout_marginTop="23sp"
-            android:maxHeight="150dp"
-            android:maxWidth="100dp"
+            android:maxHeight="170dp"
+            android:maxWidth="120dp"
+            android:padding="4sp"
+            android:background="@drawable/round_corners"
             android:layout_gravity="center"
             android:onClick="changeimg"
             android:src="@drawable/img" />

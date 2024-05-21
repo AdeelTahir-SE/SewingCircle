@@ -11,93 +11,137 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@drawable/round_corners"
         android:padding="16dp">
 
         <ImageView
-            android:layout_width="100dp"
             android:id="@+id/image1"
-            android:maxHeight="150dp"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
             android:maxWidth="100dp"
-            android:layout_height="150dp">
-        </ImageView>
+            android:layout_gravity="center"
+            android:background="@drawable/roundcornersextra"
+            android:maxHeight="150dp"></ImageView>
 
         <!-- Customer Name -->
-        <TextView
-            android:id="@+id/HName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/textViewNameCustomer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/HName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewNameCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <!-- Customer Category -->
-        <TextView
-            android:id="@+id/HCategory"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/textViewCategoryCustomer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/HCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewCategoryCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <!-- Customer Address -->
-        <TextView
-            android:id="@+id/HAddress"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/textViewAddressCustomer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/HAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewAddressCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <!-- Customer Contact Info -->
-        <TextView
-            android:id="@+id/HContactinfo"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/textViewContactInfoCustomer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/HContactinfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewContactInfoCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <!-- Customer Email -->
-        <TextView
-            android:id="@+id/HEmail"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            />
-        />
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/textViewEmailCustomer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/HEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewEmailCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+
+        </LinearLayout>
         <Button
             android:id="@+id/buttonAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:onClick="Requestbutton"
             android:text="Request"
-android:onClick="Requestbutton"
-            android:layout_gravity="right"></Button>
+            android:layout_marginTop="16dp"/>
+
 
     </LinearLayout>
 

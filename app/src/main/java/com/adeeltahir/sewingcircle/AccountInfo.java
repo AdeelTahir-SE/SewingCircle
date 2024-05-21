@@ -191,7 +191,7 @@ public class AccountInfo extends Fragment {
 
                     contactInfoTextView.setText(contactInfo);
                     editContactInfoEditText.setText(contactInfo);
-                    int width = 100; // Set your desired maximum width
+              // Set your desired maximum width
                     // Load the profile image using Glide
                     Glide.with(requireContext())
                             .load(imageUrl)
