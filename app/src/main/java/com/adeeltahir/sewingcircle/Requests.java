@@ -34,6 +34,7 @@ import java.util.List;
 
 public class Requests extends Fragment {
 
+
     private RecyclerView recyclerViewRequests;
     private RequestsAdapter requestsAdapter;
     private List<Request> requestsList;
@@ -119,7 +120,6 @@ class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ReqsCustomerV
         Request request = requestsList.get(position);
         holder.bind(request);
     }
-
     @Override
     public int getItemCount() {
         return requestsList.size();

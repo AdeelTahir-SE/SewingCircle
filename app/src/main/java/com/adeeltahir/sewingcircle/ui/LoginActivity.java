@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class LoginActivity extends AppCompatActivity {
+    private ProgressBar loadingSpinner1;
     FirebaseAuth mAuth ;
     EditText email;
     EditText password;
@@ -51,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+        loadingSpinner1 = findViewById(R.id.progressBar1);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -63,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void Submit( View view) {
         Toast.makeText(this, "wait a sec...", Toast.LENGTH_SHORT).show();
-
+        loadingSpinner1.setVisibility(View.VISIBLE);
         String Email = email.getText().toString();
         String Password = password.getText().toString();
 

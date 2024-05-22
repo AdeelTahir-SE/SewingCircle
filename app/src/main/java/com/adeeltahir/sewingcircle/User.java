@@ -1,6 +1,6 @@
 package com.adeeltahir.sewingcircle;
 
-public abstract class User {
+public abstract class User implements IUser{
     public String getName() {
         return name;
     }

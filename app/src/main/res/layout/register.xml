@@ -25,6 +25,17 @@
         android:layout_marginBottom="19sp"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+           android:layout_gravity="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPassword" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -192,7 +204,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="                     Already registered? " />
+                android:text="             Already registered? " />
 
             <TextView
                 android:textColor="@color/light_blue_600"

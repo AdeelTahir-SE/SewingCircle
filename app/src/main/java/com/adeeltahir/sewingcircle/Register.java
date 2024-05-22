@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 //import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -46,7 +47,7 @@ import java.util.Objects;
 
 public class Register extends AppCompatActivity {
     FirebaseAuth mAuth ;
-
+    private ProgressBar loadingSpinner;
     EditText name;
     EditText email;
     EditText password;
@@ -78,6 +79,7 @@ RadioButton r1,r2;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.register);
+        loadingSpinner = findViewById(R.id.progressBar);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -103,8 +105,10 @@ RadioButton r1,r2;
     }
 
     public void Submitreg (View view) {
+
+
         try {
-            Toast.makeText(this, "wait a sec...", Toast.LENGTH_SHORT).show();
+
 
         Category="";
         String address= Address.getText().toString();
@@ -123,20 +127,33 @@ RadioButton r1,r2;
                 return; // Return if category is not selected
             }
 
-        if (Name.isEmpty() || Email.isEmpty() || Password.isEmpty() ||
-                ContactInfo.isEmpty() || Category.isEmpty()||address.isEmpty()) {
-            name.setError("Please enter your name");
-            email.setError("Please enter your email");
-            password.setError("Please enter your password");
-            contactinfo.setError("Please enter your contact info");
-            Address.setError("Please enter your address");
-//            category.setError("Please enter your category");
+            if (Name.isEmpty()) {
+                name.setError("Please enter your name");
+                return;
+            }
 
+            if (Email.isEmpty()) {
+                email.setError("Please enter your email");
+                return;
+            }
 
-            return; // Return if any field is empty
-        }
+            if (Password.isEmpty()) {
+                password.setError("Please enter your password");
+                return;
+            }
 
-        mAuth.createUserWithEmailAndPassword(Email, Password)
+            if (ContactInfo.isEmpty()) {
+                contactinfo.setError("Please enter your contact info");
+                return;
+            }
+
+            if (address.isEmpty()) {
+                Address.setError("Please enter your address");
+                return;
+            }
+            loadingSpinner.setVisibility(View.VISIBLE);
+
+            mAuth.createUserWithEmailAndPassword(Email, Password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {

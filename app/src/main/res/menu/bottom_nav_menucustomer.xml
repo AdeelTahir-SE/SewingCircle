@@ -4,7 +4,7 @@
     <item
         android:id="@+id/CurrentCustomer_customer"
         android:title="Current Tailor"
-        android:icon="@drawable/customer" />
+        android:icon="@drawable/baseline_message_24" />
     <item
         android:id="@+id/Requests1_customer"
         android:title="SentRequests"
@@ -17,7 +17,7 @@
     <item
         android:id="@+id/PreviousOrders1_customer"
         android:title="Old Tailors"
-        android:icon="@drawable/customers" />
+        android:icon="@drawable/baseline_groups_24" />
 
     <item
         android:id="@+id/Accountinfo1_customer"
